@@ -1,0 +1,42 @@
+name: Deploy Prod
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build the Docker Image
+        run: |
+          docker build . --file Dockerfile --tag icomphub-api:latest
+
+      - name: Save Docker Image as .tar
+        run: |
+          docker save icomphub-api:latest -o icomphub-api.tar
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER01_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.SERVER01_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copy Docker Image to Server
+        run: |
+          scp icomphub-api.tar ${{ secrets.SERVER01_USER }}@${{ secrets.SERVER01_HOST }}:/tmp/icomphub-api.tar
+
+      - name: Run Docker Image on VPS
+        run: |
+          ssh ${{ secrets.SERVER01_USER }}@${{ secrets.SERVER01_HOST }} << 'EOF'
+            docker load -i /tmp/icomphub-api.tar
+            docker stop icomphub-api || true
+            docker rm icomphub-api || true
+            docker run -d --name icomphub-api -p ${{ vars.API_PORT_PROD }}:8000 icomphub-api:latest
+          EOF

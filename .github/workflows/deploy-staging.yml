@@ -1,10 +1,10 @@
-name: CICD
+name: Deploy Staging
 
 on:
   push:
-    branches: ["main"]
+    branches: ["staging"]
   pull_request:
-    branches: ["main"]
+    branches: ["staging"]
 
 jobs:
   deploy:
@@ -15,11 +15,11 @@ jobs:
 
       - name: Build the Docker Image
         run: |
-          docker build . --file Dockerfile --tag icomphub-api:latest
+          docker build . --file Dockerfile --tag icomphub-api-staging:latest
 
       - name: Save Docker Image as .tar
         run: |
-          docker save icomphub-api:latest -o icomphub-api.tar
+          docker save icomphub-api-staging:latest -o icomphub-api-staging.tar
 
       - name: Setup SSH
         run: |
@@ -30,13 +30,13 @@ jobs:
 
       - name: Copy Docker Image to Server
         run: |
-          scp icomphub-api.tar ${{ secrets.SERVER01_USER }}@${{ secrets.SERVER01_HOST }}:/tmp/icomphub-api.tar
+          scp icomphub-api-staging.tar ${{ secrets.SERVER01_USER }}@${{ secrets.SERVER01_HOST }}:/tmp/icomphub-api-staging.tar
 
       - name: Run Docker Image on VPS
         run: |
           ssh ${{ secrets.SERVER01_USER }}@${{ secrets.SERVER01_HOST }} << 'EOF'
-            docker load -i /tmp/icomphub-api.tar
-            docker stop icomphub-api || true
-            docker rm icomphub-api || true
-            docker run -d --name icomphub-api -p 8016:8000 icomphub-api:latest
+            docker load -i /tmp/icomphub-api-staging.tar
+            docker stop icomphub-api-staging || true
+            docker rm icomphub-api-staging || true
+            docker run -d --name icomphub-api-staging -p ${{ vars.API_PORT_STAGING }}:8000 icomphub-api-staging:latest
           EOF
