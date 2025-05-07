@@ -1,0 +1,10 @@
+services:
+  my-project-with-air:
+    build:
+      context: .
+      dockerfile: ./local.Dockerfile
+    working_dir: /app
+    ports:
+      - 8016:8000
+    volumes:
+      - ./:/app/
