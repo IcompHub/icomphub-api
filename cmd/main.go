@@ -9,11 +9,15 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error while loading .env file")
-	}
+	isInProd := os.Getenv("IN_PRODUCTION")
 
+	if isInProd != "true" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error while loading .env file")
+		}
+	}
+	
 	apiPort := os.Getenv("INTERNAL_API_PORT")
 
 	if apiPort == "" {
