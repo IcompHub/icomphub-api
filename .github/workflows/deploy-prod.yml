@@ -38,5 +38,10 @@ jobs:
             docker load -i /tmp/icomphub-api.tar
             docker stop icomphub-api || true
             docker rm icomphub-api || true
-            docker run -d --name icomphub-api -p ${{ vars.API_PORT_PROD }}:8000 icomphub-api:latest
+            docker run -d \
+              --name icomphub-api \
+              -p ${{ vars.API_PORT_PROD }}:8000 \
+              -e IN_PRODUCTION=true \
+              -e INTERNAL_API_PORT=8000 \
+              icomphub-api:latest
           EOF
