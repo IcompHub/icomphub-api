@@ -210,3 +210,7 @@ CREATE TRIGGER set_timestamp_projects_technologies
 BEFORE UPDATE ON projects_technologies
 FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
+
+INSERT INTO public.users (slug, nickname, full_name, personal_email, "password", status, system_role)
+VALUES
+('nelson', 'Nelson', 'Nelson Pereira de Carvalho Neto', 'nelson.dev@test.com', 'teste123', 'active', 'admin')

@@ -2,6 +2,7 @@ package main
 
 import (
 	"icomphub-api/controllers"
+	"icomphub-api/db"
 	"icomphub-api/docs"
 	"log"
 	"net/http"
@@ -35,6 +36,19 @@ func main() {
 		log.Fatal("Error while loading SWAGGER_API_URL from .env file")
 	}
 
+	var (
+		host     = os.Getenv("DB_HOST")
+		port     = os.Getenv("DB_PORT")
+		user     = os.Getenv("DB_USER")
+		password = os.Getenv("DB_PASSWORD")
+		dbname   = os.Getenv("DB_NAME")
+	)
+
+	dbConnection, err := db.ConnectDB(host, port, user, password, dbname)
+	if err != nil {
+		panic(err)
+	}
+
 	docs.SwaggerInfo.Title = "IcompHub API"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = swaggerApiUrl
@@ -52,8 +66,8 @@ func main() {
 		ginSwagger.WrapHandler(swaggerFiles.Handler, swaggerURL)(ctx)
 	})
 
-	UserController := controllers.NewUserController()
-	server.GET("/users", UserController.GetUsers)
+	UserController := controllers.NewUserController(dbConnection)
+	server.GET("/users", UserController.GetAllUsers)
 
 	server.Run(":" + apiPort)
 }

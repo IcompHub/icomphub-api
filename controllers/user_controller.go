@@ -1,27 +1,38 @@
 package controllers
 
 import (
+	"icomphub-api/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-type userController struct {
-
+type UserController struct {
+	DB *gorm.DB
 }
 
-func NewUserController() userController {
-	return userController{
-		
-	}
+func NewUserController(db *gorm.DB) UserController {
+	return UserController{DB: db}
 }
 
-// @Summary      Get Users
-// @Description  Get all users from database
+// GetAllUsers godoc
+// @Summary      List all users
+// @Description  Get all users from the database
 // @Tags         users
-// @Accept       json
 // @Produce      json
-// @Router       /users/ [get]
-func (p *userController) GetUsers(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"message": "helloo"})
+// @Success      200  {array}  model.User
+// @Failure      500  {object}  gin.H
+// @Router       /users [get]
+func (uc *UserController) GetAllUsers(c *gin.Context) {
+	var users []models.User
+
+	if err := uc.DB.Find(&users).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to retrieve users",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
 }

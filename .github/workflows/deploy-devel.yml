@@ -42,5 +42,10 @@ jobs:
               -e IN_PRODUCTION=true \
               -e SWAGGER_API_URL=${{ vars.API_URL_DEVEL }} \
               -e INTERNAL_API_PORT=8000 \
+              -e DB_HOST=${{ secrets.SERVER01_HOST }} \
+              -e DB_PORT=${{ vars.DB_PORT_DEVEL }} \
+              -e DB_USER=${{ vars.DB_USER_DEVEL }} \
+              -e DB_PASSWORD=${{ secrets.DB_PW_DEVEL }} \
+              -e DB_NAME=${{ vars.DB_DEVEL }} \
               icomphub-api-devel:latest
           EOF
