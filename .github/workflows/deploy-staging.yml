@@ -3,8 +3,6 @@ name: Deploy Staging
 on:
   push:
     branches: ["staging"]
-  pull_request:
-    branches: ["staging"]
 
 jobs:
   deploy:
@@ -42,6 +40,7 @@ jobs:
               --name icomphub-api-staging \
               -p ${{ vars.API_PORT_STAGING }}:8000 \
               -e IN_PRODUCTION=true \
+              -e SWAGGER_API_URL=${{ vars.API_URL_STAGING }} \
               -e INTERNAL_API_PORT=8000 \
               icomphub-api-staging:latest
           EOF

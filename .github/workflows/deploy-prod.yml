@@ -3,8 +3,6 @@ name: Deploy Prod
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
 jobs:
   deploy:
@@ -42,6 +40,7 @@ jobs:
               --name icomphub-api \
               -p ${{ vars.API_PORT_PROD }}:8000 \
               -e IN_PRODUCTION=true \
+              -e SWAGGER_API_URL=${{ vars.API_URL_PROD }} \
               -e INTERNAL_API_PORT=8000 \
               icomphub-api:latest
           EOF
