@@ -1,0 +1,24 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/users/": {
+            "get": {
+                "description": "Get all users from database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get Users",
+                "responses": {}
+            }
+        }
+    }
+}

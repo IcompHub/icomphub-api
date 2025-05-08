@@ -1,8 +1,12 @@
 [build]
-  cmd = "go build -o ./builds/main ./cmd"
+  cmd = "go build -o ./builds/main ./cmd && swag init -g ./cmd/main.go"
   bin = "./builds/main"
-  include_ext = ["go", "tpl", "tmpl", "html"]
-  exclude_dir = ["vendor"]
+  include_ext = ["go"]
+  exclude_dir = [
+    "builds",
+    "docs",
+    "tmp"
+  ]
 
 [log]
   time = true
