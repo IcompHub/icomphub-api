@@ -4,6 +4,7 @@ import (
 	"icomphub-api/controllers"
 	"icomphub-api/docs"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -28,13 +29,28 @@ func main() {
 		log.Fatal("Error while loading INTERNAL_API_PORT from .env file")
 	}
 
+	swaggerApiUrl := os.Getenv("SWAGGER_API_URL")
+
+	if swaggerApiUrl == "" {
+		log.Fatal("Error while loading SWAGGER_API_URL from .env file")
+	}
+
 	docs.SwaggerInfo.Title = "IcompHub API"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "localhost:8016"
+	docs.SwaggerInfo.Host = swaggerApiUrl
+
+	swaggerURL := ginSwagger.URL("/swagger/doc.json")
 
 	server := gin.Default()
 
-	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	server.GET("/swagger/*any", func(ctx *gin.Context) {
+		if ctx.Param("any") == "" || ctx.Param("any") == "/" {
+			ctx.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
+			return
+		}
+
+		ginSwagger.WrapHandler(swaggerFiles.Handler, swaggerURL)(ctx)
+	})
 
 	UserController := controllers.NewUserController()
 	server.GET("/users", UserController.GetUsers)
