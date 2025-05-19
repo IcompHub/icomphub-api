@@ -4,6 +4,8 @@ import (
 	"icomphub-api/controllers"
 	"icomphub-api/db"
 	"icomphub-api/docs"
+	"icomphub-api/repositories"
+	"icomphub-api/services"
 	"log"
 	"net/http"
 	"os"
@@ -66,7 +68,10 @@ func main() {
 		ginSwagger.WrapHandler(swaggerFiles.Handler, swaggerURL)(ctx)
 	})
 
-	UserController := controllers.NewUserController(dbConnection)
+	UserRepository := repositories.NewUserRepository(dbConnection)
+	UserService := services.NewUserService(UserRepository)
+	UserController := controllers.NewUserController(UserService)
+
 	server.GET("/users", UserController.GetAllUsers)
 
 	server.Run(":" + apiPort)
