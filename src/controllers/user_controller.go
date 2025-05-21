@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"icomphub-api/services"
 	"net/http"
+
+	"icomphub-api/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +26,6 @@ func NewUserController(userService *services.UserService) *UserController {
 // @Router       /users [get]
 func (uc *UserController) GetAllUsers(c *gin.Context) {
 	users, err := uc.userService.GetAllUsers()
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to retrieve users",

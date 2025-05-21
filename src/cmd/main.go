@@ -1,14 +1,15 @@
 package main
 
 import (
+	"log"
+	"net/http"
+	"os"
+
 	"icomphub-api/controllers"
 	"icomphub-api/db"
 	"icomphub-api/docs"
 	"icomphub-api/repositories"
 	"icomphub-api/services"
-	"log"
-	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -25,7 +26,7 @@ func main() {
 			log.Fatal("Error while loading .env file")
 		}
 	}
-	
+
 	apiPort := os.Getenv("INTERNAL_API_PORT")
 
 	if apiPort == "" {
@@ -74,5 +75,9 @@ func main() {
 
 	server.GET("/users", UserController.GetAllUsers)
 
-	server.Run(":" + apiPort)
+	error := server.Run(":" + apiPort)
+
+	if error != nil {
+		log.Fatal(error.Error())
+	}
 }

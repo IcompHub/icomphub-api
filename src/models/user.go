@@ -4,8 +4,10 @@ import (
 	"time"
 )
 
-type StatusEnum string
-type SystemRoleEnum string
+type (
+	StatusEnum     string
+	SystemRoleEnum string
+)
 
 const (
 	StatusActive          StatusEnum = "active"
