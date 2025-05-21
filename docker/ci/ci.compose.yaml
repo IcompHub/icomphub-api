@@ -1,0 +1,19 @@
+services:
+  linter:
+    container_name: icomphub-api-ci-linter
+    image: icomphub-api-ci-linter
+    build:
+      context: ../../src
+      dockerfile: ../docker/ci/linter.Dockerfile # it search the docker file starting by the context folder
+    working_dir: /app
+    volumes:
+      - ../../src/:/app/ # it search the volume starting by the context folder
+  format-check:
+    container_name: icomphub-api-ci-format-check
+    image: icomphub-api-ci-format-check
+    build:
+      context: ../../src
+      dockerfile: ../docker/ci/format-check.Dockerfile # it search the docker file starting by the context folder
+    working_dir: /app
+    volumes:
+      - ../../src/:/app/ # it search the volume starting by the context folder
