@@ -1,0 +1,12 @@
+services:
+  api:
+    container_name: icomphub-api
+    image: icomphub-api
+    build:
+      context: ../../src
+      dockerfile: ../docker/local/local.Dockerfile # it search the docker file starting by the context folder
+    working_dir: /app
+    ports:
+      - 8016:8000
+    volumes:
+      - ../../src/:/app/ # it search the volume starting by the context folder

@@ -10,7 +10,7 @@ If you don't have a database right there with you, don't worry, see [icomphub-db
 
 ## Update Enviroments
 
-You must update the `.env`
+You must update the `./src/.env`
 
 ```
 INTERNAL_API_PORT=8000 #port for the api to run inside docker container
@@ -31,7 +31,16 @@ Inside the `db-setup.sql` file there is a sql script to create all tables, enums
 Now just run this on your terminal:
 
 ```
-docker compose up -d
+docker compose -f ./docker/local/compose.yaml -p icomphub-api up
 ```
 
 Your api should start running at port 8016, take a look at http://localhost:8016/swagger/index.html
+
+> [!WARNING]
+> The project runs with `Air` for auto-reload and `gofumpt` for auto-formatting, to change any configs go to `src/.air.toml`
+
+## Run Lint with Docker
+
+```
+docker compose -f ./docker/ci/lint.compose.yaml -p icomphub-api-lint up
+```
