@@ -39,8 +39,8 @@ Your api should start running at port 8016, take a look at http://localhost:8016
 > [!WARNING]
 > The project runs with `Air` for auto-reload and `gofumpt` for auto-formatting, to change any configs go to `src/.air.toml`
 
-## Run Lint with Docker
+## Run CI with Docker
 
 ```
-docker compose -f ./docker/ci/lint.compose.yaml -p icomphub-api-lint up
+docker compose -f ./docker/ci/ci.compose.yaml -p icomphub-api-ci up
 ```
