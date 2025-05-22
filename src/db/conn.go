@@ -33,5 +33,4 @@ func ConnectDB(host string, port string, user string, password string, dbname st
 
 	fmt.Println("Connected to " + dbname)
 	return db, nil
-
 }

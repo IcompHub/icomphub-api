@@ -1,12 +1,15 @@
 package main
 
 import (
-	"icomphub-api/controllers"
-	"icomphub-api/db"
-	"icomphub-api/docs"
 	"log"
 	"net/http"
 	"os"
+
+	"icomphub-api/controllers"
+	"icomphub-api/db"
+	"icomphub-api/docs"
+	"icomphub-api/repositories"
+	"icomphub-api/services"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -23,7 +26,7 @@ func main() {
 			log.Fatal("Error while loading .env file")
 		}
 	}
-	
+
 	apiPort := os.Getenv("INTERNAL_API_PORT")
 
 	if apiPort == "" {
@@ -66,8 +69,15 @@ func main() {
 		ginSwagger.WrapHandler(swaggerFiles.Handler, swaggerURL)(ctx)
 	})
 
-	UserController := controllers.NewUserController(dbConnection)
+	UserRepository := repositories.NewUserRepository(dbConnection)
+	UserService := services.NewUserService(UserRepository)
+	UserController := controllers.NewUserController(UserService)
+
 	server.GET("/users", UserController.GetAllUsers)
 
-	server.Run(":" + apiPort)
+	error := server.Run(":" + apiPort)
+
+	if error != nil {
+		log.Fatal(error.Error())
+	}
 }

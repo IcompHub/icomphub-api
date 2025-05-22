@@ -1,11 +1,49 @@
-name: Deploy Prod
+name: CI/CD Prod
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image for Linter
+        run: |
+          docker build ./src \
+            --file ./docker/ci/linter.Dockerfile \
+            --tag icomphub-api-ci-linter:latest
+
+      - name: Run Linter Container
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/src:/app \
+            icomphub-api-ci-linter
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image for Format Check
+        run: |
+          docker build ./src \
+            --file ./docker/ci/format-check.Dockerfile \
+            --tag icomphub-api-ci-format-check:latest
+
+      - name: Run Format Check
+        run: |
+          docker run --rm \
+          -v ${{ github.workspace }}/src:/app \
+          icomphub-api-ci-format-check
   deploy:
+    if: github.ref_name == 'main'
+    needs: [linter, format-check]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -13,7 +51,7 @@ jobs:
 
       - name: Build the Docker Image
         run: |
-          docker build . --file Dockerfile --tag icomphub-api:latest
+          docker build ./src --file ./docker/deploy/Dockerfile --tag icomphub-api:latest
 
       - name: Save Docker Image as .tar
         run: |

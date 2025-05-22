@@ -1,5 +1,5 @@
 [build]
-  cmd = "go build -o ./builds/main ./cmd && swag init -g ./cmd/main.go"
+  cmd = "gofumpt -w . && go build -o ./builds/main ./cmd && swag init -g ./cmd/main.go"
   bin = "./builds/main"
   include_ext = ["go"]
   exclude_dir = [
