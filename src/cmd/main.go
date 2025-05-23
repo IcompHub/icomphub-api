@@ -75,6 +75,12 @@ func main() {
 
 	server.GET("/users", UserController.GetAllUsers)
 
+	technologyRepository := repositories.NewTechnologyRepository(dbConnection)
+	technologyService := services.NewTechnologyService(technologyRepository)
+	technologyController := controllers.NewTechnologyController(technologyService)
+
+	server.POST("/technologies", technologyController.CreateTechnology)
+
 	error := server.Run(":" + apiPort)
 
 	if error != nil {
