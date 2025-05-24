@@ -61,6 +61,53 @@ const docTemplate = `{
                 }
             }
         },
+        "/technologies/{id}": {
+            "delete": {
+                "description": "Remove uma tecnologia do sistema com base no ID fornecido.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technologies"
+                ],
+                "summary": "Deleta uma tecnologia existente",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da Tecnologia a ser deletada",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Tecnologia deletada com sucesso (sem conteúdo)"
+                    },
+                    "400": {
+                        "description": "Erro: ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Erro: Tecnologia não encontrada",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro: Falha ao deletar tecnologia",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Get all users from the database",
@@ -94,6 +141,10 @@ const docTemplate = `{
     "definitions": {
         "dto.TechnologyDTO": {
             "type": "object",
+            "required": [
+                "name",
+                "slug"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
