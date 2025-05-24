@@ -1,15 +1,7 @@
 package models
 
-import "gorm.io/gorm"
-
-type (
-	StatusEnum string
-)
-
-const (
-	StatusActive          StatusEnum = "active"
-	StatusInactive        StatusEnum = "inactive"
-	StatusWaitingApproval StatusEnum = "waiting_approval"
+import (
+	"time"
 )
 
 type Technology struct {

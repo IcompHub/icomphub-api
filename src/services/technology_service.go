@@ -1,12 +1,13 @@
-package service
+package services
 
 import (
+	"icomphub-api/dto"
 	"icomphub-api/models"
 	"icomphub-api/repositories"
 )
 
 type TechnologyService interface {
-	CreateTechnology(tech *models.Technology) error
+	CreateTechnology(techDTO *dto.TechnologyDTO) error
 }
 
 type technologyService struct {
@@ -17,7 +18,19 @@ func NewTechnologyService(r repositories.TechnologyRepository) TechnologyService
 	return &technologyService{repo: r}
 }
 
-func (s *technologyService) CreateTechnology(tech *models.Technology) error {
+func (s *technologyService) CreateTechnology(techDTO *dto.TechnologyDTO) error {
 	// fazer validações extras aqui
-	return s.repo.CreateTechnology(tech)
+
+	newTechnology := &models.Technology{
+		Name:   techDTO.Name,
+		Slug:   techDTO.Slug,
+		Status: models.StatusWaitingApproval,
+	}
+
+	err := s.repo.CreateTechnology(newTechnology)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
