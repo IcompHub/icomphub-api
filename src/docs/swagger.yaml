@@ -5,6 +5,9 @@ definitions:
         type: string
       slug:
         type: string
+    required:
+    - name
+    - slug
     type: object
   models.ErrorResponse:
     properties:
@@ -104,6 +107,37 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Cria uma nova tecnologia
+      tags:
+      - Technologies
+  /technologies/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Remove uma tecnologia do sistema com base no ID fornecido.
+      parameters:
+      - description: ID da Tecnologia a ser deletada
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Tecnologia deletada com sucesso (sem conteúdo)
+        "400":
+          description: 'Erro: ID inválido'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: 'Erro: Tecnologia não encontrada'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: 'Erro: Falha ao deletar tecnologia'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Deleta uma tecnologia existente
       tags:
       - Technologies
   /users:

@@ -80,6 +80,7 @@ func main() {
 	technologyController := controllers.NewTechnologyController(technologyService)
 
 	server.POST("/technologies", technologyController.CreateTechnology)
+	server.DELETE("/technologies/:id", technologyController.DeleteTechnology)
 
 	error := server.Run(":" + apiPort)
 
