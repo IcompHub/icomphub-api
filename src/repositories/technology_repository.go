@@ -9,14 +9,14 @@ type TechnologyRepository interface {
 	CreateTechnology(tech *models.Technology) error
 }
 
-type TechnologyRepository struct {
+type technologyRepo struct {
 	db *gorm.DB
 }
 
 func NewTechnologyRepository(db *gorm.DB) TechnologyRepository {
-	return &TechnologyRepository{db}
+	return &technologyRepo{db: db}
 }
 
-func (r *TechnologyRepository) CreateTechnology(tech *models.Technology) error {
+func (r *technologyRepo) CreateTechnology(tech *models.Technology) error {
 	return r.db.Create(tech).Error
 }

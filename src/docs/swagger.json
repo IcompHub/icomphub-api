@@ -4,9 +4,9 @@
         "contact": {}
     },
     "paths": {
-        "/users/": {
-            "get": {
-                "description": "Get all users from database",
+        "/technologies": {
+            "post": {
+                "description": "Adiciona uma nova tecnologia ao sistema com base nos dados fornecidos.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14,10 +14,180 @@
                     "application/json"
                 ],
                 "tags": [
+                    "Technologies"
+                ],
+                "summary": "Cria uma nova tecnologia",
+                "parameters": [
+                    {
+                        "description": "Dados da Tecnologia para criar",
+                        "name": "technology",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TechnologyDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Tecnologia criada com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/models.Technology"
+                        }
+                    },
+                    "400": {
+                        "description": "Erro: Entrada inválida\" // \u003c--- Alterado aqui",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro: Falha ao criar tecnologia\" // \u003c--- Alterado aqui",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Get all users from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
                     "users"
                 ],
-                "summary": "Get Users",
-                "responses": {}
+                "summary": "List all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.User"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.TechnologyDTO": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StatusEnum": {
+            "type": "string",
+            "enum": [
+                "active",
+                "inactive",
+                "waiting_approval"
+            ],
+            "x-enum-varnames": [
+                "StatusActive",
+                "StatusInactive",
+                "StatusWaitingApproval"
+            ]
+        },
+        "models.SystemRoleEnum": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user",
+                "professor"
+            ],
+            "x-enum-varnames": [
+                "RoleAdmin",
+                "RoleUser",
+                "RoleProfessor"
+            ]
+        },
+        "models.Technology": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.StatusEnum"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "institutional_email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "personal_email": {
+                    "type": "string"
+                },
+                "registration": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.StatusEnum"
+                },
+                "system_role": {
+                    "$ref": "#/definitions/models.SystemRoleEnum"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
             }
         }
     }
