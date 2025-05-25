@@ -81,6 +81,8 @@ func main() {
 
 	server.POST("/technologies", technologyController.CreateTechnology)
 	server.DELETE("/technologies/:id", technologyController.DeleteTechnology)
+	server.PUT("/technologies", technologyController.UpdateTechnology)
+	server.GET("/technologies", technologyController.GetTechnology)
 
 	error := server.Run(":" + apiPort)
 

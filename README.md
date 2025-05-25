@@ -44,3 +44,13 @@ Your api should start running at port 8016, take a look at http://localhost:8016
 ```
 docker compose -f ./docker/ci/ci.compose.yaml -p icomphub-api-ci up
 ```
+## How to update Swagger
+
+To generate or update the Swagger documentation, run the following command from the root of the project
+```
+sudo docker exec -it -u 0 icomphub-api /bin/sh
+```
+
+```
+swag init -g cmd/main.go
+```

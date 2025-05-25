@@ -80,3 +80,51 @@ func (tc *TechnologyController) DeleteTechnology(c *gin.Context) {
 
 	c.Status(http.StatusNoContent)
 }
+
+// UpdateTechnology godoc
+// @Summary      Atualiza uma tecnologia existente
+// @Description  Atualiza os dados de uma tecnologia com base no ID e nos dados fornecidos.
+// @Tags         Technologies
+// @Accept       json
+// @Produce      json
+// @Param        technology  body      dto.TechnologyGetDTO  true  "Dados da Tecnologia para atualizar"
+// @Success      204         {object}  nil                   "Tecnologia atualizada com sucesso (sem conteúdo)"
+// @Failure      400         {object}  models.ErrorResponse  "Erro: Entrada inválida ou ID inválido"
+// @Failure      404         {object}  models.ErrorResponse  "Erro: Tecnologia não encontrada"
+// @Failure      500         {object}  models.ErrorResponse  "Erro: Falha ao atualizar tecnologia"
+// @Router       /technologies [put]
+func (tc *TechnologyController) UpdateTechnology(c *gin.Context) {
+	var techGetDTO dto.TechnologyGetDTO
+
+	if err := c.ShouldBindJSON(&techGetDTO); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input", "details": err.Error()})
+		return
+	}
+
+	if err := tc.services.UpdateTechnology(&techGetDTO); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update technology", "details": err.Error()})
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+// GetTechnologies godoc
+// @Summary      List all technologies
+// @Description  Get all technologies from the database
+// @Tags         Technologies
+// @Produce      json
+// @Success      200  {array}  dto.TechnologyGetDTO
+// @Failure      500  {object}  models.ErrorResponse
+// @Router       /technologies [get]
+func (uc *TechnologyController) GetTechnology(c *gin.Context) {
+	tecnologies, err := uc.services.GetTechnology()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to retrieve technologies",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, tecnologies)
+}

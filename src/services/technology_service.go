@@ -10,8 +10,10 @@ import (
 )
 
 type TechnologyService interface {
+	GetTechnology() ([]dto.TechnologyGetDTO, error)
 	CreateTechnology(techDTO *dto.TechnologyDTO) error
 	DeleteTechnology(id uint64) error
+	UpdateTechnology(techGetDTO *dto.TechnologyGetDTO) error
 }
 
 type technologyService struct {
@@ -42,10 +44,6 @@ func (s *technologyService) CreateTechnology(techDTO *dto.TechnologyDTO) error {
 func (s *technologyService) DeleteTechnology(id uint64) error {
 	log.Printf("Serviço: Tentando deletar tecnologia com ID: %d", id)
 
-	// Opcional: Adicionar lógica de negócio aqui antes de deletar, se necessário.
-	// Por exemplo, verificar se a tecnologia pode ser deletada com base em seu status ou dependências.
-	// Lembre-se que repo.DeleteTechnology já verifica a existência.
-
 	err := s.repo.DeleteTechnology(id)
 	if err != nil {
 		log.Printf("Serviço: Erro ao deletar tecnologia ID %d no repositório: %v", id, err)
@@ -54,4 +52,32 @@ func (s *technologyService) DeleteTechnology(id uint64) error {
 
 	log.Printf("Serviço: Tecnologia com ID %d marcada para deleção com sucesso.", id)
 	return nil
+}
+
+func (s *technologyService) UpdateTechnology(techGetDTO *dto.TechnologyGetDTO) error {
+	err := s.repo.UpdateTechnology(techGetDTO.ID, techGetDTO.Name, techGetDTO.Slug)
+	if err != nil {
+		return fmt.Errorf("serviço: falha ao atualizar tecnologia com ID %d: %w", techGetDTO.ID, err)
+	}
+
+	return nil
+}
+
+func (s *technologyService) GetTechnology() ([]dto.TechnologyGetDTO, error) {
+	modelTechnologies, err := s.repo.GetTechnology()
+	if err != nil {
+		return nil, err
+	}
+
+	var dtoTechnologies []dto.TechnologyGetDTO
+
+	for _, modelTech := range modelTechnologies {
+		dtoTechnologies = append(dtoTechnologies, dto.TechnologyGetDTO{
+			ID:   modelTech.ID,
+			Name: modelTech.Name,
+			Slug: modelTech.Slug,
+		})
+	}
+
+	return dtoTechnologies, nil
 }

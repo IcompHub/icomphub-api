@@ -10,9 +10,10 @@ import (
 )
 
 type TechnologyRepository interface {
+	GetTechnology() ([]models.Technology, error)
 	CreateTechnology(tech *models.Technology) error
 	DeleteTechnology(id uint64) error
-
+	UpdateTechnology(id uint64, name string, slug string) error
 }
 
 type technologyRepo struct {
@@ -45,4 +46,27 @@ func (r *technologyRepo) DeleteTechnology(id uint64) error {
 	return nil
 }
 
+func (r *technologyRepo) UpdateTechnology(id uint64, name string, slug string) error {
+	var technology models.Technology
+	err := r.db.First(&technology, id).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return fmt.Errorf("tecnologia com ID %d não encontrada: %w", id, gorm.ErrRecordNotFound)
+		}
 
+		return fmt.Errorf("erro ao buscar tecnologia com ID %d: %w", id, err)
+	}
+
+	technology.Name = name
+	technology.Slug = slug
+
+	err = r.db.Save(technology).Error
+
+	return err
+}
+
+func (r *technologyRepo) GetTechnology() ([]models.Technology, error) {
+	var technologies []models.Technology
+	err := r.db.Find(&technologies).Error
+	return technologies, err
+}
