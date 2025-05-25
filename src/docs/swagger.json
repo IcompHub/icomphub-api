@@ -4,9 +4,36 @@
         "contact": {}
     },
     "paths": {
-        "/users/": {
+        "/technologies": {
             "get": {
-                "description": "Get all users from database",
+                "description": "Get all technologies from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technologies"
+                ],
+                "summary": "List all technologies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.TechnologyGetDTO"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Atualiza os dados de uma tecnologia com base no ID e nos dados fornecidos.",
                 "consumes": [
                     "application/json"
                 ],
@@ -14,10 +41,294 @@
                     "application/json"
                 ],
                 "tags": [
+                    "Technologies"
+                ],
+                "summary": "Atualiza uma tecnologia existente",
+                "parameters": [
+                    {
+                        "description": "Dados da Tecnologia para atualizar",
+                        "name": "technology",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TechnologyGetDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Tecnologia atualizada com sucesso (sem conteúdo)"
+                    },
+                    "400": {
+                        "description": "Erro: Entrada inválida ou ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Erro: Tecnologia não encontrada",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro: Falha ao atualizar tecnologia",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Adiciona uma nova tecnologia ao sistema com base nos dados fornecidos.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technologies"
+                ],
+                "summary": "Cria uma nova tecnologia",
+                "parameters": [
+                    {
+                        "description": "Dados da Tecnologia para criar",
+                        "name": "technology",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TechnologyDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Tecnologia criada com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/models.Technology"
+                        }
+                    },
+                    "400": {
+                        "description": "Erro: Entrada inválida\" // \u003c--- Alterado aqui",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro: Falha ao criar tecnologia\" // \u003c--- Alterado aqui",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/technologies/{id}": {
+            "delete": {
+                "description": "Remove uma tecnologia do sistema com base no ID fornecido.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technologies"
+                ],
+                "summary": "Deleta uma tecnologia existente",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID da Tecnologia a ser deletada",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Tecnologia deletada com sucesso (sem conteúdo)"
+                    },
+                    "400": {
+                        "description": "Erro: ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Erro: Tecnologia não encontrada",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro: Falha ao deletar tecnologia",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Get all users from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
                     "users"
                 ],
-                "summary": "Get Users",
-                "responses": {}
+                "summary": "List all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.User"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.TechnologyDTO": {
+            "type": "object",
+            "required": [
+                "name",
+                "slug"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.TechnologyGetDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "type": "string",
+                    "example": "Detalhes adicionais do erro, se houver"
+                },
+                "error": {
+                    "type": "string",
+                    "example": "Mensagem de erro descritiva"
+                }
+            }
+        },
+        "models.StatusEnum": {
+            "type": "string",
+            "enum": [
+                "active",
+                "inactive",
+                "waiting_approval"
+            ],
+            "x-enum-varnames": [
+                "StatusActive",
+                "StatusInactive",
+                "StatusWaitingApproval"
+            ]
+        },
+        "models.SystemRoleEnum": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "user",
+                "professor"
+            ],
+            "x-enum-varnames": [
+                "RoleAdmin",
+                "RoleUser",
+                "RoleProfessor"
+            ]
+        },
+        "models.Technology": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.StatusEnum"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "institutional_email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "personal_email": {
+                    "type": "string"
+                },
+                "registration": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.StatusEnum"
+                },
+                "system_role": {
+                    "$ref": "#/definitions/models.SystemRoleEnum"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
             }
         }
     }
