@@ -246,10 +246,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "details": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Detalhes adicionais do erro, se houver"
                 },
                 "error": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Mensagem de erro descritiva"
                 }
             }
         },

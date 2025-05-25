@@ -21,8 +21,10 @@ definitions:
   models.ErrorResponse:
     properties:
       details:
+        example: Detalhes adicionais do erro, se houver
         type: string
       error:
+        example: Mensagem de erro descritiva
         type: string
     type: object
   models.StatusEnum:
