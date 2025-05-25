@@ -16,6 +16,80 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/technologies": {
+            "get": {
+                "description": "Get all technologies from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technologies"
+                ],
+                "summary": "List all technologies",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dto.TechnologyGetDTO"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Atualiza os dados de uma tecnologia com base no ID e nos dados fornecidos.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technologies"
+                ],
+                "summary": "Atualiza uma tecnologia existente",
+                "parameters": [
+                    {
+                        "description": "Dados da Tecnologia para atualizar",
+                        "name": "technology",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TechnologyGetDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Tecnologia atualizada com sucesso (sem conteúdo)"
+                    },
+                    "400": {
+                        "description": "Erro: Entrada inválida ou ID inválido",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Erro: Tecnologia não encontrada",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro: Falha ao atualizar tecnologia",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Adiciona uma nova tecnologia ao sistema com base nos dados fornecidos.",
                 "consumes": [
@@ -146,6 +220,20 @@ const docTemplate = `{
                 "slug"
             ],
             "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.TechnologyGetDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 },

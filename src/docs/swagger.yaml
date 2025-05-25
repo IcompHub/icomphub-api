@@ -9,6 +9,15 @@ definitions:
     - name
     - slug
     type: object
+  dto.TechnologyGetDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
   models.ErrorResponse:
     properties:
       details:
@@ -80,6 +89,24 @@ info:
   contact: {}
 paths:
   /technologies:
+    get:
+      description: Get all technologies from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.TechnologyGetDTO'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: List all technologies
+      tags:
+      - Technologies
     post:
       consumes:
       - application/json
@@ -107,6 +134,38 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Cria uma nova tecnologia
+      tags:
+      - Technologies
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados de uma tecnologia com base no ID e nos dados
+        fornecidos.
+      parameters:
+      - description: Dados da Tecnologia para atualizar
+        in: body
+        name: technology
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TechnologyGetDTO'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: Tecnologia atualizada com sucesso (sem conteúdo)
+        "400":
+          description: 'Erro: Entrada inválida ou ID inválido'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: 'Erro: Tecnologia não encontrada'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: 'Erro: Falha ao atualizar tecnologia'
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Atualiza uma tecnologia existente
       tags:
       - Technologies
   /technologies/{id}:
