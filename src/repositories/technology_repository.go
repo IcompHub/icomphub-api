@@ -27,7 +27,7 @@ func NewTechnologyRepository(db *gorm.DB) TechnologyRepository {
 }
 
 func (repository *technologyRepository) makeSearchQuery(req *dtos.TechnologyRequestDTO) *gorm.DB {
-	var query *gorm.DB = repository.db.Model(&models.Technology{})
+	query := repository.db.Model(&models.Technology{})
 
 	if strings.TrimSpace(req.Search) != "" {
 		searchPattern := "%" + req.Search + "%"
@@ -41,7 +41,7 @@ func (repository *technologyRepository) GetAll(req *dtos.TechnologyRequestDTO) (
 	offset := (req.PageNumber - 1) * req.PageSize
 	var technologies []models.Technology
 
-	var query *gorm.DB = repository.makeSearchQuery(req)
+	query := repository.makeSearchQuery(req)
 
 	query = query.Offset(int(offset)).Limit(int(req.PageSize))
 
@@ -52,7 +52,7 @@ func (repository *technologyRepository) GetAll(req *dtos.TechnologyRequestDTO) (
 func (repository *technologyRepository) CountAll(req *dtos.TechnologyRequestDTO) (uint64, error) {
 	var count int64 = 0
 
-	var query *gorm.DB = repository.makeSearchQuery(req)
+	query := repository.makeSearchQuery(req)
 
 	err := query.Count(&count).Error
 	return uint64(count), err
