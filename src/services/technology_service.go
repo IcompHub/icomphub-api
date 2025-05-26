@@ -1,83 +1,106 @@
 package services
 
 import (
-	"fmt"
-	"log"
-
-	"icomphub-api/dto"
+	"icomphub-api/codes"
+	"icomphub-api/dtos"
+	"icomphub-api/mappers"
 	"icomphub-api/models"
 	"icomphub-api/repositories"
 )
 
 type TechnologyService interface {
-	GetTechnology() ([]dto.TechnologyGetDTO, error)
-	CreateTechnology(techDTO *dto.TechnologyDTO) error
-	DeleteTechnology(id uint64) error
-	UpdateTechnology(techGetDTO *dto.TechnologyGetDTO) error
+	GetAll(req *dtos.TechnologyRequestDTO) ([]dtos.TechnologyDTO, codes.Code, error)
+	CountAll(req *dtos.TechnologyRequestDTO) (uint64, codes.Code, error)
+	Find(id uint64) (*dtos.TechnologyDTO, codes.Code, error)
+	Create(createDTO *dtos.TechnologyCreateRequestDTO) (*dtos.TechnologyDTO, codes.Code, error)
+	Delete(id uint64) (codes.Code, error)
+	Update(id uint64, updateDTO *dtos.TechnologyUpdateRequestDTO) (*dtos.TechnologyDTO, codes.Code, error)
 }
 
 type technologyService struct {
-	repo repositories.TechnologyRepository
+	repository repositories.TechnologyRepository
 }
 
-func NewTechnologyService(r repositories.TechnologyRepository) TechnologyService {
-	return &technologyService{repo: r}
+func NewTechnologyService(repository repositories.TechnologyRepository) TechnologyService {
+	return &technologyService{repository: repository}
 }
 
-func (s *technologyService) CreateTechnology(techDTO *dto.TechnologyDTO) error {
-	// fazer validações extras aqui
-
-	newTechnology := &models.Technology{
-		Name:   techDTO.Name,
-		Slug:   techDTO.Slug,
-		Status: models.StatusWaitingApproval,
-	}
-
-	err := s.repo.CreateTechnology(newTechnology)
+func (service *technologyService) find(id uint64) (*models.Technology, codes.Code, error) {
+	technology, err := service.repository.Find(id)
 	if err != nil {
-		return err
+		return nil, codes.ErrorFindingTechnology, err
 	}
 
-	return nil
+	return technology, codes.FindTechnology, nil
 }
 
-func (s *technologyService) DeleteTechnology(id uint64) error {
-	log.Printf("Serviço: Tentando deletar tecnologia com ID: %d", id)
-
-	err := s.repo.DeleteTechnology(id)
+func (service *technologyService) GetAll(req *dtos.TechnologyRequestDTO) ([]dtos.TechnologyDTO, codes.Code, error) {
+	technologies, err := service.repository.GetAll(req)
 	if err != nil {
-		log.Printf("Serviço: Erro ao deletar tecnologia ID %d no repositório: %v", id, err)
-		return fmt.Errorf("serviço: falha ao deletar tecnologia com ID %d: %w", id, err)
+		return nil, codes.ErrorGettingAllTechnologies, err
 	}
 
-	log.Printf("Serviço: Tecnologia com ID %d marcada para deleção com sucesso.", id)
-	return nil
+	return mappers.TechnologiesToDTOs(technologies), codes.GetAllTechnologies, nil
 }
 
-func (s *technologyService) UpdateTechnology(techGetDTO *dto.TechnologyGetDTO) error {
-	err := s.repo.UpdateTechnology(techGetDTO.ID, techGetDTO.Name, techGetDTO.Slug)
+func (service *technologyService) CountAll(req *dtos.TechnologyRequestDTO) (uint64, codes.Code, error) {
+	count, err := service.repository.CountAll(req)
 	if err != nil {
-		return fmt.Errorf("serviço: falha ao atualizar tecnologia com ID %d: %w", techGetDTO.ID, err)
+		return 0, codes.ErrorCoutingAllTechnologies, err
 	}
 
-	return nil
+	return count, codes.CountAllTechnologies, nil
 }
 
-func (s *technologyService) GetTechnology() ([]dto.TechnologyGetDTO, error) {
-	modelTechnologies, err := s.repo.GetTechnology()
+func (service *technologyService) Find(id uint64) (*dtos.TechnologyDTO, codes.Code, error) {
+	technology, code, err := service.find(id)
+
+	return mappers.TechnologyToDTO(technology), code, err
+}
+
+func (service *technologyService) Create(createDTO *dtos.TechnologyCreateRequestDTO) (*dtos.TechnologyDTO, codes.Code, error) {
+	technology := mappers.CreateRequestDTOToTechnology(createDTO)
+
+	err := service.repository.Create(technology)
 	if err != nil {
-		return nil, err
+		return nil, codes.ErrorCreatingTechnology, err
 	}
 
-	var dtoTechnologies []dto.TechnologyGetDTO
+	return mappers.TechnologyToDTO(technology), codes.CreateTechnology, nil
+}
 
-	for _, modelTech := range modelTechnologies {
-		dtoTechnologies = append(dtoTechnologies, dto.TechnologyGetDTO{
-			ID:   modelTech.ID,
-			Name: modelTech.Name,
-			Slug: modelTech.Slug,
-		})
+func (service *technologyService) Delete(id uint64) (codes.Code, error) {
+	technology, code, err := service.find(id)
+	if err != nil {
+		return code, err
 	}
 
-	return dtoTechnologies, nil
+	err = service.repository.Delete(technology)
+	if err != nil {
+		return codes.ErrorDeletingTechnology, err
+	}
+
+	return codes.DeleteTechnology, nil
+}
+
+func (service *technologyService) Update(id uint64, updateDTO *dtos.TechnologyUpdateRequestDTO) (*dtos.TechnologyDTO, codes.Code, error) {
+	technology, code, err := service.find(id)
+	if err != nil {
+		return nil, code, err
+	}
+
+	if updateDTO.Slug != "" {
+		technology.Slug = updateDTO.Slug
+	}
+
+	if updateDTO.Name != "" {
+		technology.Name = updateDTO.Name
+	}
+
+	err = service.repository.Update(technology)
+	if err != nil {
+		return mappers.TechnologyToDTO(technology), codes.ErrorUpdatingTechnology, err
+	}
+
+	return mappers.TechnologyToDTO(technology), codes.UpdateTechnology, nil
 }

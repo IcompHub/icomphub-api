@@ -17,81 +17,53 @@ const docTemplate = `{
     "paths": {
         "/technologies": {
             "get": {
-                "description": "Get all technologies from the database",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Technologies"
+                    "technologies"
                 ],
                 "summary": "List all technologies",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "Nodejs",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/dto.TechnologyGetDTO"
-                            }
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_TechnologyDTO"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Atualiza os dados de uma tecnologia com base no ID e nos dados fornecidos.",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Technologies"
-                ],
-                "summary": "Atualiza uma tecnologia existente",
-                "parameters": [
-                    {
-                        "description": "Dados da Tecnologia para atualizar",
-                        "name": "technology",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.TechnologyGetDTO"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Tecnologia atualizada com sucesso (sem conteúdo)"
-                    },
-                    "400": {
-                        "description": "Erro: Entrada inválida ou ID inválido",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Erro: Tecnologia não encontrada",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Erro: Falha ao atualizar tecnologia",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
                         }
                     }
                 }
             },
             "post": {
-                "description": "Adiciona uma nova tecnologia ao sistema com base nos dados fornecidos.",
                 "consumes": [
                     "application/json"
                 ],
@@ -99,45 +71,75 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Technologies"
+                    "technologies"
                 ],
-                "summary": "Cria uma nova tecnologia",
+                "summary": "Create a technology",
                 "parameters": [
                     {
-                        "description": "Dados da Tecnologia para criar",
-                        "name": "technology",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.TechnologyDTO"
-                        }
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "minLength": 3,
+                        "type": "string",
+                        "name": "slug",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Tecnologia criada com sucesso",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Technology"
-                        }
-                    },
-                    "400": {
-                        "description": "Erro: Entrada inválida\" // \u003c--- Alterado aqui",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_TechnologyDTO"
                         }
                     },
                     "500": {
-                        "description": "Erro: Falha ao criar tecnologia\" // \u003c--- Alterado aqui",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
                         }
                     }
                 }
             }
         },
         "/technologies/{id}": {
-            "delete": {
-                "description": "Remove uma tecnologia do sistema com base no ID fornecido.",
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technologies"
+                ],
+                "summary": "Find a technology",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Technology ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_TechnologyDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "put": {
                 "consumes": [
                     "application/json"
                 ],
@@ -145,38 +147,71 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Technologies"
+                    "technologies"
                 ],
-                "summary": "Deleta uma tecnologia existente",
+                "summary": "Update a technology",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID da Tecnologia a ser deletada",
+                        "description": "Technology ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "slug",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_TechnologyDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "technologies"
+                ],
+                "summary": "Delete a technology",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Technology ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "Tecnologia deletada com sucesso (sem conteúdo)"
-                    },
-                    "400": {
-                        "description": "Erro: ID inválido",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Erro: Tecnologia não encontrada",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
                         }
                     },
                     "500": {
-                        "description": "Erro: Falha ao deletar tecnologia",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
                         }
                     }
                 }
@@ -184,7 +219,6 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
-                "description": "Get all users from the database",
                 "produces": [
                     "application/json"
                 ],
@@ -192,20 +226,41 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "List all users",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "Ana",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.User"
-                            }
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_UserDTO"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
                         }
                     }
                 }
@@ -213,22 +268,58 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.TechnologyDTO": {
-            "type": "object",
-            "required": [
-                "name",
-                "slug"
+        "codes.Code": {
+            "type": "string",
+            "enum": [
+                "unknow_error",
+                "invalid_params",
+                "get_all_users",
+                "count_all_users",
+                "find_user",
+                "update_user",
+                "create_user",
+                "delete_user",
+                "error_getting_users",
+                "error_counting_users",
+                "get_all_technologies",
+                "count_all_technologies",
+                "find_technology",
+                "update_technology",
+                "create_technology",
+                "delete_technology",
+                "error_getting_technologies",
+                "error_counting_technologies",
+                "error_finding_technology",
+                "error_updating_technology",
+                "error_creating_technology",
+                "error_deleting_technology"
             ],
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                }
-            }
+            "x-enum-varnames": [
+                "UnknowError",
+                "InvalidParams",
+                "GetAllUsers",
+                "CountAllUsers",
+                "FindUser",
+                "UpdateUser",
+                "CreateUser",
+                "DeleteUser",
+                "ErrorGettingAllUsers",
+                "ErrorCoutingAllUsers",
+                "GetAllTechnologies",
+                "CountAllTechnologies",
+                "FindTechnology",
+                "UpdateTechnology",
+                "CreateTechnology",
+                "DeleteTechnology",
+                "ErrorGettingAllTechnologies",
+                "ErrorCoutingAllTechnologies",
+                "ErrorFindingTechnology",
+                "ErrorUpdatingTechnology",
+                "ErrorCreatingTechnology",
+                "ErrorDeletingTechnology"
+            ]
         },
-        "dto.TechnologyGetDTO": {
+        "dtos.TechnologyDTO": {
             "type": "object",
             "properties": {
                 "id": {
@@ -242,33 +333,27 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ErrorResponse": {
+        "dtos.UserDTO": {
             "type": "object",
             "properties": {
-                "details": {
-                    "type": "string",
-                    "example": "Detalhes adicionais do erro, se houver"
+                "id": {
+                    "type": "integer"
                 },
-                "error": {
-                    "type": "string",
-                    "example": "Mensagem de erro descritiva"
+                "nickname": {
+                    "type": "string"
+                },
+                "personal_email": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/enums.SystemRoleEnum"
+                },
+                "slug": {
+                    "type": "string"
                 }
             }
         },
-        "models.StatusEnum": {
-            "type": "string",
-            "enum": [
-                "active",
-                "inactive",
-                "waiting_approval"
-            ],
-            "x-enum-varnames": [
-                "StatusActive",
-                "StatusInactive",
-                "StatusWaitingApproval"
-            ]
-        },
-        "models.SystemRoleEnum": {
+        "enums.SystemRoleEnum": {
             "type": "string",
             "enum": [
                 "admin",
@@ -281,64 +366,147 @@ const docTemplate = `{
                 "RoleProfessor"
             ]
         },
-        "models.Technology": {
+        "icomphub-api_dtos.PaginationDTO-dtos_TechnologyDTO": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.TechnologyDTO"
+                    }
                 },
-                "id": {
-                    "type": "integer"
+                "page_number": {
+                    "type": "integer",
+                    "example": 1
                 },
-                "name": {
-                    "type": "string"
+                "page_size": {
+                    "type": "integer",
+                    "example": 10
                 },
-                "slug": {
-                    "type": "string"
+                "total_items": {
+                    "type": "integer",
+                    "example": 20
                 },
-                "status": {
-                    "$ref": "#/definitions/models.StatusEnum"
-                },
-                "updated_at": {
-                    "type": "string"
+                "total_pages": {
+                    "type": "integer",
+                    "example": 2
                 }
             }
         },
-        "models.User": {
+        "icomphub-api_dtos.PaginationDTO-dtos_UserDTO": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.UserDTO"
+                    }
                 },
-                "full_name": {
-                    "type": "string"
+                "page_number": {
+                    "type": "integer",
+                    "example": 1
                 },
-                "id": {
-                    "type": "integer"
+                "page_size": {
+                    "type": "integer",
+                    "example": 10
                 },
-                "institutional_email": {
-                    "type": "string"
+                "total_items": {
+                    "type": "integer",
+                    "example": 20
                 },
-                "nickname": {
-                    "type": "string"
+                "total_pages": {
+                    "type": "integer",
+                    "example": 2
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-any": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
                 },
-                "personal_email": {
-                    "type": "string"
+                "data": {},
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
                 },
-                "registration": {
-                    "type": "string"
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-dtos_TechnologyDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
                 },
-                "slug": {
-                    "type": "string"
+                "data": {
+                    "$ref": "#/definitions/dtos.TechnologyDTO"
                 },
-                "status": {
-                    "$ref": "#/definitions/models.StatusEnum"
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
                 },
-                "system_role": {
-                    "$ref": "#/definitions/models.SystemRoleEnum"
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_TechnologyDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
                 },
-                "updated_at": {
-                    "type": "string"
+                "data": {
+                    "$ref": "#/definitions/icomphub-api_dtos.PaginationDTO-dtos_TechnologyDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_UserDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/icomphub-api_dtos.PaginationDTO-dtos_UserDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
                 }
             }
         }
