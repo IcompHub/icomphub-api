@@ -9,6 +9,7 @@ import (
 	"icomphub-api/db"
 	"icomphub-api/docs"
 	"icomphub-api/repositories"
+	"icomphub-api/routes"
 	"icomphub-api/services"
 
 	"github.com/gin-gonic/gin"
@@ -58,9 +59,17 @@ func main() {
 
 	swaggerURL := ginSwagger.URL("/swagger/doc.json")
 
-	server := gin.Default()
+	userRepository := repositories.NewUserRepository(dbConnection)
+	userService := services.NewUserService(userRepository)
+	userController := controllers.NewUserController(userService)
 
-	server.GET("/swagger/*any", func(ctx *gin.Context) {
+	technologyRepository := repositories.NewTechnologyRepository(dbConnection)
+	technologyService := services.NewTechnologyService(technologyRepository)
+	technologyController := controllers.NewTechnologyController(technologyService)
+
+	router := routes.SetupRouter(userController, technologyController)
+
+	router.GET("/swagger/*any", func(ctx *gin.Context) {
 		if ctx.Param("any") == "" || ctx.Param("any") == "/" {
 			ctx.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
 			return
@@ -69,22 +78,7 @@ func main() {
 		ginSwagger.WrapHandler(swaggerFiles.Handler, swaggerURL)(ctx)
 	})
 
-	UserRepository := repositories.NewUserRepository(dbConnection)
-	UserService := services.NewUserService(UserRepository)
-	UserController := controllers.NewUserController(UserService)
-
-	server.GET("/users", UserController.GetAllUsers)
-
-	technologyRepository := repositories.NewTechnologyRepository(dbConnection)
-	technologyService := services.NewTechnologyService(technologyRepository)
-	technologyController := controllers.NewTechnologyController(technologyService)
-
-	server.POST("/technologies", technologyController.CreateTechnology)
-	server.DELETE("/technologies/:id", technologyController.DeleteTechnology)
-	server.PUT("/technologies", technologyController.UpdateTechnology)
-	server.GET("/technologies", technologyController.GetTechnology)
-
-	error := server.Run(":" + apiPort)
+	error := router.Run(":" + apiPort)
 
 	if error != nil {
 		log.Fatal(error.Error())
