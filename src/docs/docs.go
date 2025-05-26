@@ -76,18 +76,13 @@ const docTemplate = `{
                 "summary": "Create a technology",
                 "parameters": [
                     {
-                        "minLength": 3,
-                        "type": "string",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "minLength": 3,
-                        "type": "string",
-                        "name": "slug",
-                        "in": "query",
-                        "required": true
+                        "description": "TechnologyCreateRequestDTO",
+                        "name": "TechnologyCreateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.TechnologyCreateRequestDTO"
+                        }
                     }
                 ],
                 "responses": {
@@ -159,14 +154,13 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "name": "name",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "slug",
-                        "in": "query"
+                        "description": "TechnologyUpdateRequestDTO",
+                        "name": "TechnologyUpdateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.TechnologyUpdateRequestDTO"
+                        }
                     }
                 ],
                 "responses": {
@@ -264,6 +258,153 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create an user",
+                "parameters": [
+                    {
+                        "description": "UserCreateRequestDTO",
+                        "name": "UserCreateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserCreateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_UserDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Find an user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_UserDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update an user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "UserUpdateRequestDTO",
+                        "name": "UserUpdateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserUpdateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_UserDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete an user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
             }
         }
     },
@@ -281,6 +422,10 @@ const docTemplate = `{
                 "delete_user",
                 "error_getting_users",
                 "error_counting_users",
+                "error_finding_user",
+                "error_updating_user",
+                "error_creating_user",
+                "error_deleting_user",
                 "get_all_technologies",
                 "count_all_technologies",
                 "find_technology",
@@ -305,6 +450,10 @@ const docTemplate = `{
                 "DeleteUser",
                 "ErrorGettingAllUsers",
                 "ErrorCoutingAllUsers",
+                "ErrorFindingUser",
+                "ErrorUpdatingUser",
+                "ErrorCreatingUser",
+                "ErrorDeletingUser",
                 "GetAllTechnologies",
                 "CountAllTechnologies",
                 "FindTechnology",
@@ -319,6 +468,23 @@ const docTemplate = `{
                 "ErrorDeletingTechnology"
             ]
         },
+        "dtos.TechnologyCreateRequestDTO": {
+            "type": "object",
+            "required": [
+                "name",
+                "slug"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "slug": {
+                    "type": "string",
+                    "minLength": 2
+                }
+            }
+        },
         "dtos.TechnologyDTO": {
             "type": "object",
             "properties": {
@@ -330,6 +496,55 @@ const docTemplate = `{
                 },
                 "slug": {
                     "type": "string"
+                }
+            }
+        },
+        "dtos.TechnologyUpdateRequestDTO": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.UserCreateRequestDTO": {
+            "type": "object",
+            "required": [
+                "full_name",
+                "nickname",
+                "password",
+                "personal_email",
+                "slug"
+            ],
+            "properties": {
+                "full_name": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "institutional_email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "personal_email": {
+                    "type": "string",
+                    "minLength": 5
+                },
+                "registration": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string",
+                    "minLength": 2
                 }
             }
         },
@@ -347,6 +562,29 @@ const docTemplate = `{
                 },
                 "role": {
                     "$ref": "#/definitions/enums.SystemRoleEnum"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.UserUpdateRequestDTO": {
+            "type": "object",
+            "properties": {
+                "full_name": {
+                    "type": "string"
+                },
+                "institutional_email": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "personal_email": {
+                    "type": "string"
+                },
+                "registration": {
+                    "type": "string"
                 },
                 "slug": {
                     "type": "string"
@@ -454,6 +692,29 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/dtos.TechnologyDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-dtos_UserDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/dtos.UserDTO"
                 },
                 "message": {
                     "type": "string",

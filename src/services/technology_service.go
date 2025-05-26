@@ -1,6 +1,9 @@
 package services
 
 import (
+	"errors"
+	"strings"
+
 	"icomphub-api/codes"
 	"icomphub-api/dtos"
 	"icomphub-api/mappers"
@@ -34,6 +37,24 @@ func (service *technologyService) find(id uint64) (*models.Technology, codes.Cod
 	return technology, codes.FindTechnology, nil
 }
 
+func (service *technologyService) validateTechnology(technology *models.Technology, isCreating bool) error {
+	if strings.TrimSpace(technology.Slug) == "" {
+		return errors.New("invalid technology slug")
+	}
+
+	if strings.TrimSpace(technology.Name) == "" {
+		return errors.New("invalid technology name")
+	}
+
+	if !isCreating {
+		if strings.TrimSpace(string(technology.Status)) == "" {
+			return errors.New("invalid technology status")
+		}
+	}
+
+	return nil
+}
+
 func (service *technologyService) GetAll(req *dtos.TechnologyRequestDTO) ([]dtos.TechnologyDTO, codes.Code, error) {
 	technologies, err := service.repository.GetAll(req)
 	if err != nil {
@@ -61,7 +82,12 @@ func (service *technologyService) Find(id uint64) (*dtos.TechnologyDTO, codes.Co
 func (service *technologyService) Create(createDTO *dtos.TechnologyCreateRequestDTO) (*dtos.TechnologyDTO, codes.Code, error) {
 	technology := mappers.CreateRequestDTOToTechnology(createDTO)
 
-	err := service.repository.Create(technology)
+	err := service.validateTechnology(technology, true)
+	if err != nil {
+		return nil, codes.InvalidParams, err
+	}
+
+	err = service.repository.Create(technology)
 	if err != nil {
 		return nil, codes.ErrorCreatingTechnology, err
 	}
@@ -89,12 +115,17 @@ func (service *technologyService) Update(id uint64, updateDTO *dtos.TechnologyUp
 		return nil, code, err
 	}
 
-	if updateDTO.Slug != "" {
-		technology.Slug = updateDTO.Slug
+	if updateDTO.Slug != nil {
+		technology.Slug = *updateDTO.Slug
 	}
 
-	if updateDTO.Name != "" {
-		technology.Name = updateDTO.Name
+	if updateDTO.Name != nil {
+		technology.Name = *updateDTO.Name
+	}
+
+	err = service.validateTechnology(technology, true)
+	if err != nil {
+		return nil, codes.InvalidParams, err
 	}
 
 	err = service.repository.Update(technology)

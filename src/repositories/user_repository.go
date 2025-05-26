@@ -12,6 +12,10 @@ import (
 type UserRepository interface {
 	GetAll(req *dtos.UserRequestDTO) ([]models.User, error)
 	CountAll(req *dtos.UserRequestDTO) (uint64, error)
+	Find(id uint64) (*models.User, error)
+	Create(user *models.User) error
+	Delete(user *models.User) error
+	Update(user *models.User) error
 }
 
 type userRepository struct {
@@ -52,4 +56,23 @@ func (repository *userRepository) CountAll(req *dtos.UserRequestDTO) (uint64, er
 
 	err := query.Count(&count).Error
 	return uint64(count), err
+}
+
+func (repository *userRepository) Find(id uint64) (*models.User, error) {
+	var user *models.User
+	err := repository.db.Model(&models.User{}).First(&user, id).Error
+
+	return user, err
+}
+
+func (repository *userRepository) Create(user *models.User) error {
+	return repository.db.Model(&models.User{}).Create(&user).Error
+}
+
+func (repository *userRepository) Delete(user *models.User) error {
+	return repository.db.Model(&models.User{}).Where("id = ?", user.ID).Delete(&user).Error
+}
+
+func (repository *userRepository) Update(user *models.User) error {
+	return repository.db.Model(&models.User{}).Where("id = ?", user.ID).Save(&user).Error
 }

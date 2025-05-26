@@ -11,6 +11,10 @@ definitions:
     - delete_user
     - error_getting_users
     - error_counting_users
+    - error_finding_user
+    - error_updating_user
+    - error_creating_user
+    - error_deleting_user
     - get_all_technologies
     - count_all_technologies
     - find_technology
@@ -35,6 +39,10 @@ definitions:
     - DeleteUser
     - ErrorGettingAllUsers
     - ErrorCoutingAllUsers
+    - ErrorFindingUser
+    - ErrorUpdatingUser
+    - ErrorCreatingUser
+    - ErrorDeletingUser
     - GetAllTechnologies
     - CountAllTechnologies
     - FindTechnology
@@ -47,6 +55,18 @@ definitions:
     - ErrorUpdatingTechnology
     - ErrorCreatingTechnology
     - ErrorDeletingTechnology
+  dtos.TechnologyCreateRequestDTO:
+    properties:
+      name:
+        minLength: 2
+        type: string
+      slug:
+        minLength: 2
+        type: string
+    required:
+    - name
+    - slug
+    type: object
   dtos.TechnologyDTO:
     properties:
       id:
@@ -55,6 +75,41 @@ definitions:
         type: string
       slug:
         type: string
+    type: object
+  dtos.TechnologyUpdateRequestDTO:
+    properties:
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
+  dtos.UserCreateRequestDTO:
+    properties:
+      full_name:
+        minLength: 2
+        type: string
+      institutional_email:
+        type: string
+      nickname:
+        minLength: 2
+        type: string
+      password:
+        minLength: 5
+        type: string
+      personal_email:
+        minLength: 5
+        type: string
+      registration:
+        type: string
+      slug:
+        minLength: 2
+        type: string
+    required:
+    - full_name
+    - nickname
+    - password
+    - personal_email
+    - slug
     type: object
   dtos.UserDTO:
     properties:
@@ -66,6 +121,21 @@ definitions:
         type: string
       role:
         $ref: '#/definitions/enums.SystemRoleEnum'
+      slug:
+        type: string
+    type: object
+  dtos.UserUpdateRequestDTO:
+    properties:
+      full_name:
+        type: string
+      institutional_email:
+        type: string
+      nickname:
+        type: string
+      personal_email:
+        type: string
+      registration:
+        type: string
       slug:
         type: string
     type: object
@@ -144,6 +214,20 @@ definitions:
       success:
         type: boolean
     type: object
+  icomphub-api_dtos.Response-dtos_UserDTO:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/codes.Code'
+        example: USER_CREATED
+      data:
+        $ref: '#/definitions/dtos.UserDTO'
+      message:
+        example: User created successfully
+        type: string
+      success:
+        type: boolean
+    type: object
   icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_TechnologyDTO:
     properties:
       code:
@@ -212,16 +296,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - in: query
-        minLength: 3
-        name: name
+      - description: TechnologyCreateRequestDTO
+        in: body
+        name: TechnologyCreateRequestDTO
         required: true
-        type: string
-      - in: query
-        minLength: 3
-        name: slug
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/dtos.TechnologyCreateRequestDTO'
       produces:
       - application/json
       responses:
@@ -288,12 +368,12 @@ paths:
         name: id
         required: true
         type: integer
-      - in: query
-        name: name
-        type: string
-      - in: query
-        name: slug
-        type: string
+      - description: TechnologyUpdateRequestDTO
+        in: body
+        name: TechnologyUpdateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.TechnologyUpdateRequestDTO'
       produces:
       - application/json
       responses:
@@ -339,6 +419,102 @@ paths:
           schema:
             $ref: '#/definitions/icomphub-api_dtos.Response-any'
       summary: List all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: UserCreateRequestDTO
+        in: body
+        name: UserCreateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserCreateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_UserDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Create an user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Delete an user
+      tags:
+      - users
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_UserDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Find an user
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: UserUpdateRequestDTO
+        in: body
+        name: UserUpdateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserUpdateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_UserDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Update an user
       tags:
       - users
 swagger: "2.0"

@@ -12,11 +12,11 @@ type TechnologyRequestDTO struct {
 }
 
 type TechnologyCreateRequestDTO struct {
-	Slug string `form:"slug" json:"slug" binding:"required,min=3"`
-	Name string `form:"name" json:"name" binding:"required,min=3"`
+	Slug string `form:"slug" json:"slug" binding:"required,min=2"`
+	Name string `form:"name" json:"name" binding:"required,min=2"`
 }
 
 type TechnologyUpdateRequestDTO struct {
-	Slug string `form:"slug" json:"slug"`
-	Name string `form:"name" json:"name"`
+	Slug *string `form:"slug" json:"slug"`
+	Name *string `form:"name" json:"name"`
 }
