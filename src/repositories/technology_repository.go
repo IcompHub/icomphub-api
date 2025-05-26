@@ -60,19 +60,19 @@ func (repository *technologyRepository) CountAll(req *dtos.TechnologyRequestDTO)
 
 func (repository *technologyRepository) Find(id uint64) (*models.Technology, error) {
 	var technology *models.Technology
-	err := repository.db.First(&technology, id).Error
+	err := repository.db.Model(&models.Technology{}).First(&technology, id).Error
 
 	return technology, err
 }
 
 func (repository *technologyRepository) Create(technology *models.Technology) error {
-	return repository.db.Create(&technology).Error
+	return repository.db.Model(&models.Technology{}).Create(&technology).Error
 }
 
 func (repository *technologyRepository) Delete(technology *models.Technology) error {
-	return repository.db.Delete(&technology).Error
+	return repository.db.Model(&models.Technology{}).Delete(&technology).Error
 }
 
 func (repository *technologyRepository) Update(technology *models.Technology) error {
-	return repository.db.Save(&technology).Error
+	return repository.db.Model(&models.Technology{}).Save(&technology).Error
 }

@@ -17,6 +17,10 @@ const (
 
 	ErrorGettingAllUsers Code = "error_getting_users"
 	ErrorCoutingAllUsers Code = "error_counting_users"
+	ErrorFindingUser     Code = "error_finding_user"
+	ErrorUpdatingUser    Code = "error_updating_user"
+	ErrorCreatingUser    Code = "error_creating_user"
+	ErrorDeletingUser    Code = "error_deleting_user"
 
 	GetAllTechnologies   Code = "get_all_technologies"
 	CountAllTechnologies Code = "count_all_technologies"
