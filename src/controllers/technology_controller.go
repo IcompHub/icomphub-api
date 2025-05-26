@@ -85,14 +85,14 @@ func (controller *TechnologyController) Find(context *gin.Context) {
 // @Tags         technologies
 // @Accept       json
 // @Produce      json
-// @Param        TechnologyCreateRequestDTO  query dtos.TechnologyCreateRequestDTO  true "TechnologyCreateRequestDTO"
+// @Param        TechnologyCreateRequestDTO  body dtos.TechnologyCreateRequestDTO  true "TechnologyCreateRequestDTO"
 // @Success      200  {object}  dtos.Response[dtos.TechnologyDTO]
 // @Failure      500  {object}  dtos.Response[any]
 // @Router       /technologies [post]
 func (controller *TechnologyController) Create(context *gin.Context) {
 	var req dtos.TechnologyCreateRequestDTO
 
-	err := context.ShouldBindQuery(&req)
+	err := context.ShouldBindBodyWithJSON(&req)
 	if err != nil {
 		handlers.BadRequest(context, codes.InvalidParams, err)
 		return
@@ -114,7 +114,7 @@ func (controller *TechnologyController) Create(context *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        id   path  uint64  true "Technology ID"
-// @Param        TechnologyUpdateRequestDTO  query dtos.TechnologyUpdateRequestDTO  true "TechnologyUpdateRequestDTO"
+// @Param        TechnologyUpdateRequestDTO  body dtos.TechnologyUpdateRequestDTO  true "TechnologyUpdateRequestDTO"
 // @Success      200  {object}  dtos.Response[dtos.TechnologyDTO]
 // @Failure      500  {object}  dtos.Response[any]
 // @Router       /technologies/{id} [put]
@@ -127,7 +127,7 @@ func (controller *TechnologyController) Update(context *gin.Context) {
 
 	var req dtos.TechnologyUpdateRequestDTO
 
-	err = context.ShouldBindQuery(&req)
+	err = context.ShouldBindBodyWithJSON(&req)
 	if err != nil {
 		handlers.BadRequest(context, codes.InvalidParams, err)
 		return
@@ -147,7 +147,7 @@ func (controller *TechnologyController) Update(context *gin.Context) {
 		return
 	}
 
-	handlers.Ok(context, codes.FindTechnology, "technology upadated with success", technology)
+	handlers.Ok(context, codes.UpdateTechnology, "technology upadated with success", technology)
 }
 
 // @Summary      Delete a technology
@@ -176,5 +176,5 @@ func (controller *TechnologyController) Delete(context *gin.Context) {
 		return
 	}
 
-	handlers.Ok(context, codes.FindTechnology, "technology deleted with success", nil)
+	handlers.Ok(context, codes.DeleteTechnology, "technology deleted with success", nil)
 }

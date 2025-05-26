@@ -5,8 +5,8 @@ import (
 	"icomphub-api/models"
 )
 
-func UserToDTO(user *models.User) dtos.UserDTO {
-	return dtos.UserDTO{
+func UserToDTO(user *models.User) *dtos.UserDTO {
+	return &dtos.UserDTO{
 		Id:            user.ID,
 		Slug:          user.Slug,
 		Nickname:      user.Nickname,
@@ -15,10 +15,21 @@ func UserToDTO(user *models.User) dtos.UserDTO {
 	}
 }
 
+func CreateRequestDTOToUser(createDTO *dtos.UserCreateRequestDTO) *models.User {
+	return &models.User{
+		Slug:               createDTO.Slug,
+		Nickname:           createDTO.Nickname,
+		FullName:           createDTO.FullName,
+		PersonalEmail:      createDTO.PersonalEmail,
+		InstitutionalEmail: createDTO.InstitutionalEmail,
+		Registration:       createDTO.Registration,
+	}
+}
+
 func UsersToDTOs(users []models.User) []dtos.UserDTO {
 	dtosList := make([]dtos.UserDTO, len(users))
 	for i, user := range users {
-		dtosList[i] = UserToDTO(&user)
+		dtosList[i] = *UserToDTO(&user)
 	}
 	return dtosList
 }
