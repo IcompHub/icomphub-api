@@ -23,7 +23,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 }
 
 func (repository *userRepository) makeSearchQuery(req *dtos.UserRequestDTO) *gorm.DB {
-	var query *gorm.DB = repository.db.Model(&models.User{})
+	query := repository.db.Model(&models.User{})
 
 	if strings.TrimSpace(req.Search) != "" {
 		searchPattern := "%" + req.Search + "%"
@@ -37,7 +37,7 @@ func (repository *userRepository) GetAll(req *dtos.UserRequestDTO) ([]models.Use
 	offset := (req.PageNumber - 1) * req.PageSize
 	var users []models.User
 
-	var query *gorm.DB = repository.makeSearchQuery(req)
+	query := repository.makeSearchQuery(req)
 
 	query = query.Offset(int(offset)).Limit(int(req.PageSize))
 
@@ -48,7 +48,7 @@ func (repository *userRepository) GetAll(req *dtos.UserRequestDTO) ([]models.Use
 func (repository *userRepository) CountAll(req *dtos.UserRequestDTO) (uint64, error) {
 	var count int64 = 0
 
-	var query *gorm.DB = repository.makeSearchQuery(req)
+	query := repository.makeSearchQuery(req)
 
 	err := query.Count(&count).Error
 	return uint64(count), err
