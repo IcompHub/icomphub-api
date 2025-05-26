@@ -23,6 +23,7 @@ func CreateRequestDTOToUser(createDTO *dtos.UserCreateRequestDTO) *models.User {
 		PersonalEmail:      createDTO.PersonalEmail,
 		InstitutionalEmail: createDTO.InstitutionalEmail,
 		Registration:       createDTO.Registration,
+		Password:           createDTO.Password,
 	}
 }
 

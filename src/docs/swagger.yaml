@@ -93,6 +93,9 @@ definitions:
       nickname:
         minLength: 2
         type: string
+      password:
+        minLength: 5
+        type: string
       personal_email:
         minLength: 5
         type: string
@@ -104,6 +107,7 @@ definitions:
     required:
     - full_name
     - nickname
+    - password
     - personal_email
     - slug
     type: object

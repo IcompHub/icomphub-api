@@ -17,6 +17,6 @@ type TechnologyCreateRequestDTO struct {
 }
 
 type TechnologyUpdateRequestDTO struct {
-	Slug string `form:"slug" json:"slug"`
-	Name string `form:"name" json:"name"`
+	Slug *string `form:"slug" json:"slug"`
+	Name *string `form:"name" json:"name"`
 }
