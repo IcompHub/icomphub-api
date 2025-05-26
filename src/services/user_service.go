@@ -1,6 +1,9 @@
 package services
 
 import (
+	"errors"
+	"strings"
+
 	"icomphub-api/codes"
 	"icomphub-api/dtos"
 	"icomphub-api/mappers"
@@ -34,6 +37,48 @@ func (service *userService) find(id uint64) (*models.User, codes.Code, error) {
 	return user, codes.FindUser, nil
 }
 
+func (service *userService) validateUser(user *models.User, isCreating bool) error {
+	if strings.TrimSpace(user.Slug) == "" {
+		return errors.New("invalid user slug")
+	}
+
+	if strings.TrimSpace(user.Nickname) == "" {
+		return errors.New("invalid user nickname")
+	}
+
+	if strings.TrimSpace(user.FullName) == "" {
+		return errors.New("invalid user full name")
+	}
+
+	if strings.TrimSpace(user.PersonalEmail) == "" {
+		return errors.New("invalid user personal email")
+	}
+
+	if strings.TrimSpace(user.Password) == "" {
+		return errors.New("invalid user password")
+	}
+
+	if !isCreating {
+		if strings.TrimSpace(string(user.Status)) == "" {
+			return errors.New("invalid user status")
+		}
+
+		if strings.TrimSpace(string(user.SystemRole)) == "" {
+			return errors.New("invalid user systemRole")
+		}
+	}
+
+	if user.InstitutionalEmail != nil && strings.TrimSpace(*user.InstitutionalEmail) == "" {
+		return errors.New("invalid user institutional email")
+	}
+
+	if user.Registration != nil && strings.TrimSpace(*user.Registration) == "" {
+		return errors.New("invalid user registration")
+	}
+
+	return nil
+}
+
 func (service *userService) GetAll(req *dtos.UserRequestDTO) ([]dtos.UserDTO, codes.Code, error) {
 	users, err := service.repository.GetAll(req)
 	if err != nil {
@@ -61,7 +106,12 @@ func (service *userService) Find(id uint64) (*dtos.UserDTO, codes.Code, error) {
 func (service *userService) Create(createDTO *dtos.UserCreateRequestDTO) (*dtos.UserDTO, codes.Code, error) {
 	user := mappers.CreateRequestDTOToUser(createDTO)
 
-	err := service.repository.Create(user)
+	err := service.validateUser(user, true)
+	if err != nil {
+		return nil, codes.InvalidParams, err
+	}
+
+	err = service.repository.Create(user)
 	if err != nil {
 		return nil, codes.ErrorCreatingUser, err
 	}
@@ -89,12 +139,29 @@ func (service *userService) Update(id uint64, updateDTO *dtos.UserUpdateRequestD
 		return nil, code, err
 	}
 
-	if updateDTO.Slug != "" {
-		user.Slug = updateDTO.Slug
+	if updateDTO.Slug != nil {
+		user.Slug = *updateDTO.Slug
 	}
 
-	if updateDTO.FullName != "" {
-		user.FullName = updateDTO.FullName
+	if updateDTO.FullName != nil {
+		user.FullName = *updateDTO.FullName
+	}
+
+	if updateDTO.Nickname != nil {
+		user.Nickname = *updateDTO.Nickname
+	}
+
+	if updateDTO.PersonalEmail != nil {
+		user.PersonalEmail = *updateDTO.PersonalEmail
+	}
+
+	user.Registration = updateDTO.Registration
+
+	user.InstitutionalEmail = updateDTO.InstitutionalEmail
+
+	err = service.validateUser(user, false)
+	if err != nil {
+		return nil, codes.InvalidParams, err
 	}
 
 	err = service.repository.Update(user)

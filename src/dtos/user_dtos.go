@@ -22,13 +22,14 @@ type UserCreateRequestDTO struct {
 	PersonalEmail      string  `form:"personal_email" json:"personal_email" binding:"required,email,min=5"`
 	InstitutionalEmail *string `form:"institutional_email" json:"institutional_email"`
 	Registration       *string `form:"registration" json:"registration"`
+	Password           string  `form:"password" json:"password" binding:"required,min=5"`
 }
 
 type UserUpdateRequestDTO struct {
-	Slug               string `form:"slug" json:"slug"`
-	Nickname           string `form:"nickname" json:"nickname"`
-	FullName           string `form:"full_name" json:"full_name"`
-	PersonalEmail      string `form:"personal_email" json:"personal_email"`
-	InstitutionalEmail string `form:"institutional_email" json:"institutional_email"`
-	Registration       string `form:"registration" json:"registration"`
+	Slug               *string `form:"slug" json:"slug"`
+	Nickname           *string `form:"nickname" json:"nickname"`
+	FullName           *string `form:"full_name" json:"full_name"`
+	PersonalEmail      *string `form:"personal_email" json:"personal_email"`
+	InstitutionalEmail *string `form:"institutional_email" json:"institutional_email"`
+	Registration       *string `form:"registration" json:"registration"`
 }

@@ -70,9 +70,9 @@ func (repository *userRepository) Create(user *models.User) error {
 }
 
 func (repository *userRepository) Delete(user *models.User) error {
-	return repository.db.Model(&models.User{}).Delete(&user).Error
+	return repository.db.Model(&models.User{}).Where("id = ?", user.ID).Delete(&user).Error
 }
 
 func (repository *userRepository) Update(user *models.User) error {
-	return repository.db.Model(&models.User{}).Save(&user).Error
+	return repository.db.Model(&models.User{}).Where("id = ?", user.ID).Save(&user).Error
 }

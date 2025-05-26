@@ -70,9 +70,9 @@ func (repository *technologyRepository) Create(technology *models.Technology) er
 }
 
 func (repository *technologyRepository) Delete(technology *models.Technology) error {
-	return repository.db.Model(&models.Technology{}).Delete(&technology).Error
+	return repository.db.Model(&models.Technology{}).Where("id = ?", technology.ID).Delete(&technology).Error
 }
 
 func (repository *technologyRepository) Update(technology *models.Technology) error {
-	return repository.db.Model(&models.Technology{}).Save(&technology).Error
+	return repository.db.Model(&models.Technology{}).Where("id = ?", technology.ID).Save(&technology).Error
 }
