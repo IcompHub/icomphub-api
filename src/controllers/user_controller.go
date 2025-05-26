@@ -1,37 +1,51 @@
 package controllers
 
 import (
-	"net/http"
-
+	"icomphub-api/codes"
+	"icomphub-api/dtos"
+	"icomphub-api/handlers"
 	"icomphub-api/services"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
-	userService *services.UserService
+	service services.UserService
 }
 
-func NewUserController(userService *services.UserService) *UserController {
-	return &UserController{userService}
+func NewUserController(service services.UserService) *UserController {
+	return &UserController{service}
 }
 
-// GetAllUsers godoc
 // @Summary      List all users
-// @Description  Get all users from the database
 // @Tags         users
 // @Produce      json
-// @Success      200  {array}  models.User
-// @Failure      500  {object}  models.ErrorResponse
+// @Param        UserRequestDTO  query dtos.UserRequestDTO  true  "UserRequestDTO"
+// @Success      200  {object}  dtos.Response[dtos.PaginationDTO[dtos.UserDTO]]
+// @Failure      500  {object}  dtos.Response[any]
 // @Router       /users [get]
-func (uc *UserController) GetAllUsers(c *gin.Context) {
-	users, err := uc.userService.GetAllUsers()
+func (controller *UserController) GetAll(context *gin.Context) {
+	var req dtos.UserRequestDTO
+
+	err := context.ShouldBindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to retrieve users",
-		})
+		handlers.BadRequest(context, codes.InvalidParams, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, users)
+	var users []dtos.UserDTO
+
+	users, code, err := controller.service.GetAll(&req)
+	if err != nil {
+		handlers.InternalServerError(context, code, err)
+		return
+	}
+
+	count, code, err := controller.service.CountAll(&req)
+	if err != nil {
+		handlers.InternalServerError(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, code, "Got all users with success", handlers.Paginate(users, count, req.PageNumber, req.PageSize))
 }
