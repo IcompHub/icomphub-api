@@ -35,4 +35,32 @@ const (
 	ErrorUpdatingTechnology     Code = "error_updating_technology"
 	ErrorCreatingTechnology     Code = "error_creating_technology"
 	ErrorDeletingTechnology     Code = "error_deleting_technology"
+
+	GetAllProjects   Code = "get_all_projects"
+	CountAllProjects Code = "count_all_projects"
+	FindProject      Code = "find_project"
+	CreateProject    Code = "create_project"
+	UpdateProject    Code = "update_project"
+	DeleteProject    Code = "delete_project"
+
+	ErrorGettingAllProjects  Code = "error_getting_projects"
+	ErrorCountingAllProjects Code = "error_counting_projects"
+	ErrorFindingProject      Code = "error_finding_project"
+	ErrorCreatingProject     Code = "error_creating_project"
+	ErrorUpdatingProject     Code = "error_updating_project"
+	ErrorDeletingProject     Code = "error_deleting_project"
+
+	GetAllClassGroups   Code = "get_all_class_groups"
+	CountAllClassGroups Code = "count_all_class_groups"
+	FindClassGroup      Code = "find_class_group"
+	CreateClassGroup    Code = "create_class_group"
+	UpdateClassGroup    Code = "update_class_group"
+	DeleteClassGroup    Code = "delete_class_group"
+
+	ErrorGettingAllClassGroups  Code = "error_getting_class_groups"
+	ErrorCountingAllClassGroups Code = "error_counting_class_groups"
+	ErrorFindingClassGroup      Code = "error_finding_class_group"
+	ErrorCreatingClassGroup     Code = "error_creating_class_group"
+	ErrorUpdatingClassGroup     Code = "error_updating_class_group"
+	ErrorDeletingClassGroup     Code = "error_deleting_class_group"
 )
