@@ -1,0 +1,20 @@
+package models
+
+import (
+	"time"
+
+	"icomphub-api/enums"
+
+	"gorm.io/datatypes"
+)
+
+type Project struct {
+	ID           uint64           `json:"id" gorm:"primaryKey;autoIncrement"`
+	Slug         string           `json:"slug" gorm:"unique;not null"`
+	Name         string           `json:"name" gorm:"unique;not null"`
+	Status       enums.StatusEnum `json:"status" gorm:"type:status_enum;default:'waiting_approval'"`
+	Data         datatypes.JSON   `json:"data" gorm:"type:jsonb;not null"`
+	ClassGroupID uint64           `json:"class_group_id" gorm:"not null"`
+	CreatedAt    time.Time        `json:"created_at" gorm:"autoCreateTime"`
+	UpdatedAt    time.Time        `json:"updated_at" gorm:"autoUpdateTime"`
+}

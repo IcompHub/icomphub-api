@@ -15,6 +15,398 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/class_groups": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class_groups"
+                ],
+                "summary": "List all class groups",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "Math 101",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ClassGroupDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class_groups"
+                ],
+                "summary": "Create a class group",
+                "parameters": [
+                    {
+                        "description": "ClassGroupCreateRequestDTO",
+                        "name": "ClassGroupCreateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ClassGroupCreateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/class_groups/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class_groups"
+                ],
+                "summary": "Find a class group",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ClassGroup ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class_groups"
+                ],
+                "summary": "Update a class group",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ClassGroup ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ClassGroupUpdateRequestDTO",
+                        "name": "ClassGroupUpdateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ClassGroupUpdateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "class_groups"
+                ],
+                "summary": "Delete a class group",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ClassGroup ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "List all projects",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 1,
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "My Project",
+                        "name": "search",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ProjectDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Create a project",
+                "parameters": [
+                    {
+                        "description": "ProjectCreateRequestDTO",
+                        "name": "ProjectCreateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ProjectCreateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ProjectDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Find a project",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ProjectDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Update a project",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ProjectUpdateRequestDTO",
+                        "name": "ProjectUpdateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.ProjectUpdateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ProjectDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Delete a project",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
         "/technologies": {
             "get": {
                 "produces": [
@@ -437,7 +829,31 @@ const docTemplate = `{
                 "error_finding_technology",
                 "error_updating_technology",
                 "error_creating_technology",
-                "error_deleting_technology"
+                "error_deleting_technology",
+                "get_all_projects",
+                "count_all_projects",
+                "find_project",
+                "create_project",
+                "update_project",
+                "delete_project",
+                "error_getting_projects",
+                "error_counting_projects",
+                "error_finding_project",
+                "error_creating_project",
+                "error_updating_project",
+                "error_deleting_project",
+                "get_all_class_groups",
+                "count_all_class_groups",
+                "find_class_group",
+                "create_class_group",
+                "update_class_group",
+                "delete_class_group",
+                "error_getting_class_groups",
+                "error_counting_class_groups",
+                "error_finding_class_group",
+                "error_creating_class_group",
+                "error_updating_class_group",
+                "error_deleting_class_group"
             ],
             "x-enum-varnames": [
                 "UnknowError",
@@ -465,8 +881,146 @@ const docTemplate = `{
                 "ErrorFindingTechnology",
                 "ErrorUpdatingTechnology",
                 "ErrorCreatingTechnology",
-                "ErrorDeletingTechnology"
+                "ErrorDeletingTechnology",
+                "GetAllProjects",
+                "CountAllProjects",
+                "FindProject",
+                "CreateProject",
+                "UpdateProject",
+                "DeleteProject",
+                "ErrorGettingAllProjects",
+                "ErrorCountingAllProjects",
+                "ErrorFindingProject",
+                "ErrorCreatingProject",
+                "ErrorUpdatingProject",
+                "ErrorDeletingProject",
+                "GetAllClassGroups",
+                "CountAllClassGroups",
+                "FindClassGroup",
+                "CreateClassGroup",
+                "UpdateClassGroup",
+                "DeleteClassGroup",
+                "ErrorGettingAllClassGroups",
+                "ErrorCountingAllClassGroups",
+                "ErrorFindingClassGroup",
+                "ErrorCreatingClassGroup",
+                "ErrorUpdatingClassGroup",
+                "ErrorDeletingClassGroup"
             ]
+        },
+        "dtos.ClassGroupCreateRequestDTO": {
+            "type": "object",
+            "required": [
+                "name",
+                "slug"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "slug": {
+                    "type": "string",
+                    "minLength": 2
+                }
+            }
+        },
+        "dtos.ClassGroupDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ClassGroupUpdateRequestDTO": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ProjectCreateRequestDTO": {
+            "type": "object",
+            "required": [
+                "class_group_id",
+                "data",
+                "name",
+                "slug"
+            ],
+            "properties": {
+                "class_group_id": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "slug": {
+                    "type": "string",
+                    "minLength": 2
+                }
+            }
+        },
+        "dtos.ProjectDTO": {
+            "type": "object",
+            "properties": {
+                "class_group_id": {
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "JSON structure with title, resume, etc.",
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ProjectUpdateRequestDTO": {
+            "type": "object",
+            "properties": {
+                "class_group_id": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
         },
         "dtos.TechnologyCreateRequestDTO": {
             "type": "object",
@@ -604,6 +1158,60 @@ const docTemplate = `{
                 "RoleProfessor"
             ]
         },
+        "icomphub-api_dtos.PaginationDTO-dtos_ClassGroupDTO": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.ClassGroupDTO"
+                    }
+                },
+                "page_number": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "page_size": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "total_items": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "total_pages": {
+                    "type": "integer",
+                    "example": 2
+                }
+            }
+        },
+        "icomphub-api_dtos.PaginationDTO-dtos_ProjectDTO": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.ProjectDTO"
+                    }
+                },
+                "page_number": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "page_size": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "total_items": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "total_pages": {
+                    "type": "integer",
+                    "example": 2
+                }
+            }
+        },
         "icomphub-api_dtos.PaginationDTO-dtos_TechnologyDTO": {
             "type": "object",
             "properties": {
@@ -679,6 +1287,52 @@ const docTemplate = `{
                 }
             }
         },
+        "icomphub-api_dtos.Response-dtos_ClassGroupDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/dtos.ClassGroupDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-dtos_ProjectDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/dtos.ProjectDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
         "icomphub-api_dtos.Response-dtos_TechnologyDTO": {
             "type": "object",
             "properties": {
@@ -715,6 +1369,52 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/dtos.UserDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ClassGroupDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/icomphub-api_dtos.PaginationDTO-dtos_ClassGroupDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ProjectDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/icomphub-api_dtos.PaginationDTO-dtos_ProjectDTO"
                 },
                 "message": {
                     "type": "string",
