@@ -27,6 +27,30 @@ definitions:
     - error_updating_technology
     - error_creating_technology
     - error_deleting_technology
+    - get_all_projects
+    - count_all_projects
+    - find_project
+    - create_project
+    - update_project
+    - delete_project
+    - error_getting_projects
+    - error_counting_projects
+    - error_finding_project
+    - error_creating_project
+    - error_updating_project
+    - error_deleting_project
+    - get_all_class_groups
+    - count_all_class_groups
+    - find_class_group
+    - create_class_group
+    - update_class_group
+    - delete_class_group
+    - error_getting_class_groups
+    - error_counting_class_groups
+    - error_finding_class_group
+    - error_creating_class_group
+    - error_updating_class_group
+    - error_deleting_class_group
     type: string
     x-enum-varnames:
     - UnknowError
@@ -55,6 +79,108 @@ definitions:
     - ErrorUpdatingTechnology
     - ErrorCreatingTechnology
     - ErrorDeletingTechnology
+    - GetAllProjects
+    - CountAllProjects
+    - FindProject
+    - CreateProject
+    - UpdateProject
+    - DeleteProject
+    - ErrorGettingAllProjects
+    - ErrorCountingAllProjects
+    - ErrorFindingProject
+    - ErrorCreatingProject
+    - ErrorUpdatingProject
+    - ErrorDeletingProject
+    - GetAllClassGroups
+    - CountAllClassGroups
+    - FindClassGroup
+    - CreateClassGroup
+    - UpdateClassGroup
+    - DeleteClassGroup
+    - ErrorGettingAllClassGroups
+    - ErrorCountingAllClassGroups
+    - ErrorFindingClassGroup
+    - ErrorCreatingClassGroup
+    - ErrorUpdatingClassGroup
+    - ErrorDeletingClassGroup
+  dtos.ClassGroupCreateRequestDTO:
+    properties:
+      name:
+        minLength: 2
+        type: string
+      slug:
+        minLength: 2
+        type: string
+    required:
+    - name
+    - slug
+    type: object
+  dtos.ClassGroupDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+      status:
+        type: string
+    type: object
+  dtos.ClassGroupUpdateRequestDTO:
+    properties:
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
+  dtos.ProjectCreateRequestDTO:
+    properties:
+      class_group_id:
+        type: integer
+      data:
+        additionalProperties: {}
+        type: object
+      name:
+        minLength: 2
+        type: string
+      slug:
+        minLength: 2
+        type: string
+    required:
+    - class_group_id
+    - data
+    - name
+    - slug
+    type: object
+  dtos.ProjectDTO:
+    properties:
+      class_group_id:
+        type: integer
+      data:
+        additionalProperties: {}
+        description: JSON structure with title, resume, etc.
+        type: object
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+      status:
+        type: string
+    type: object
+  dtos.ProjectUpdateRequestDTO:
+    properties:
+      class_group_id:
+        type: integer
+      data:
+        additionalProperties: {}
+        type: object
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
   dtos.TechnologyCreateRequestDTO:
     properties:
       name:
@@ -149,6 +275,44 @@ definitions:
     - RoleAdmin
     - RoleUser
     - RoleProfessor
+  icomphub-api_dtos.PaginationDTO-dtos_ClassGroupDTO:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dtos.ClassGroupDTO'
+        type: array
+      page_number:
+        example: 1
+        type: integer
+      page_size:
+        example: 10
+        type: integer
+      total_items:
+        example: 20
+        type: integer
+      total_pages:
+        example: 2
+        type: integer
+    type: object
+  icomphub-api_dtos.PaginationDTO-dtos_ProjectDTO:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dtos.ProjectDTO'
+        type: array
+      page_number:
+        example: 1
+        type: integer
+      page_size:
+        example: 10
+        type: integer
+      total_items:
+        example: 20
+        type: integer
+      total_pages:
+        example: 2
+        type: integer
+    type: object
   icomphub-api_dtos.PaginationDTO-dtos_TechnologyDTO:
     properties:
       items:
@@ -200,6 +364,34 @@ definitions:
       success:
         type: boolean
     type: object
+  icomphub-api_dtos.Response-dtos_ClassGroupDTO:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/codes.Code'
+        example: USER_CREATED
+      data:
+        $ref: '#/definitions/dtos.ClassGroupDTO'
+      message:
+        example: User created successfully
+        type: string
+      success:
+        type: boolean
+    type: object
+  icomphub-api_dtos.Response-dtos_ProjectDTO:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/codes.Code'
+        example: USER_CREATED
+      data:
+        $ref: '#/definitions/dtos.ProjectDTO'
+      message:
+        example: User created successfully
+        type: string
+      success:
+        type: boolean
+    type: object
   icomphub-api_dtos.Response-dtos_TechnologyDTO:
     properties:
       code:
@@ -222,6 +414,34 @@ definitions:
         example: USER_CREATED
       data:
         $ref: '#/definitions/dtos.UserDTO'
+      message:
+        example: User created successfully
+        type: string
+      success:
+        type: boolean
+    type: object
+  icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ClassGroupDTO:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/codes.Code'
+        example: USER_CREATED
+      data:
+        $ref: '#/definitions/icomphub-api_dtos.PaginationDTO-dtos_ClassGroupDTO'
+      message:
+        example: User created successfully
+        type: string
+      success:
+        type: boolean
+    type: object
+  icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ProjectDTO:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/codes.Code'
+        example: USER_CREATED
+      data:
+        $ref: '#/definitions/icomphub-api_dtos.PaginationDTO-dtos_ProjectDTO'
       message:
         example: User created successfully
         type: string
@@ -259,6 +479,264 @@ definitions:
 info:
   contact: {}
 paths:
+  /class_groups:
+    get:
+      parameters:
+      - default: 1
+        in: query
+        minimum: 1
+        name: pageNumber
+        required: true
+        type: integer
+      - default: 10
+        in: query
+        minimum: 1
+        name: pageSize
+        required: true
+        type: integer
+      - example: Math 101
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ClassGroupDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: List all class groups
+      tags:
+      - class_groups
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ClassGroupCreateRequestDTO
+        in: body
+        name: ClassGroupCreateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ClassGroupCreateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Create a class group
+      tags:
+      - class_groups
+  /class_groups/{id}:
+    delete:
+      parameters:
+      - description: ClassGroup ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Delete a class group
+      tags:
+      - class_groups
+    get:
+      parameters:
+      - description: ClassGroup ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Find a class group
+      tags:
+      - class_groups
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ClassGroup ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ClassGroupUpdateRequestDTO
+        in: body
+        name: ClassGroupUpdateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ClassGroupUpdateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Update a class group
+      tags:
+      - class_groups
+  /projects:
+    get:
+      parameters:
+      - default: 1
+        in: query
+        minimum: 1
+        name: pageNumber
+        required: true
+        type: integer
+      - default: 10
+        in: query
+        minimum: 1
+        name: pageSize
+        required: true
+        type: integer
+      - example: My Project
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ProjectDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: List all projects
+      tags:
+      - projects
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ProjectCreateRequestDTO
+        in: body
+        name: ProjectCreateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ProjectCreateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_ProjectDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Create a project
+      tags:
+      - projects
+  /projects/{id}:
+    delete:
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Delete a project
+      tags:
+      - projects
+    get:
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_ProjectDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Find a project
+      tags:
+      - projects
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ProjectUpdateRequestDTO
+        in: body
+        name: ProjectUpdateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.ProjectUpdateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_ProjectDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Update a project
+      tags:
+      - projects
   /technologies:
     get:
       parameters:

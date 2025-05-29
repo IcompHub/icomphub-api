@@ -67,7 +67,15 @@ func main() {
 	technologyService := services.NewTechnologyService(technologyRepository)
 	technologyController := controllers.NewTechnologyController(technologyService)
 
-	router := routes.SetupRouter(userController, technologyController)
+	classGroupRepository := repositories.NewClassGroupRepository(dbConnection)
+	classGroupService := services.NewClassGroupService(classGroupRepository)
+	classGroupController := controllers.NewClassGroupController(classGroupService)
+
+	projectRepository := repositories.NewProjectRepository(dbConnection)
+	projectService := services.NewProjectService(projectRepository)
+	projectController := controllers.NewProjectController(projectService)
+
+	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController)
 
 	router.GET("/swagger/*any", func(ctx *gin.Context) {
 		if ctx.Param("any") == "" || ctx.Param("any") == "/" {
