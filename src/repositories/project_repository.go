@@ -49,7 +49,7 @@ func (repository *projectRepository) GetAll(req *dtos.ProjectRequestDTO) ([]mode
 
 	query = query.Offset(int(offset)).Limit(int(req.PageSize))
 
-	err := query.Find(&projects).Error
+	err := query.Preload("Technologies").Find(&projects).Error
 	return projects, err
 }
 
