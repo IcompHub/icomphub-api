@@ -168,6 +168,10 @@ definitions:
         type: string
       status:
         type: string
+      technologies:
+        items:
+          $ref: '#/definitions/dtos.TechnologyDTO'
+        type: array
     type: object
   dtos.ProjectUpdateRequestDTO:
     properties:

@@ -1001,6 +1001,12 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                },
+                "technologies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.TechnologyDTO"
+                    }
                 }
             }
         },

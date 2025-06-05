@@ -10,12 +10,27 @@ import (
 	"gorm.io/datatypes"
 )
 
+func TechnologyToDTO2(tech *models.Technology) dtos.TechnologyDTO {
+	return dtos.TechnologyDTO{
+		Id:   tech.ID,
+		Slug: tech.Slug,
+		Name: tech.Name,
+	}
+}
+
 func ProjectToDTO(project *models.Project) (*dtos.ProjectDTO, error) {
 	var data map[string]any
 
 	err := json.Unmarshal(project.Data, &data)
 	if err != nil {
 		return nil, err
+	}
+
+	var technologiesDTO []dtos.TechnologyDTO
+	if project.Technologies != nil {
+		for _, techModel := range project.Technologies {
+			technologiesDTO = append(technologiesDTO, TechnologyToDTO2(&techModel))
+		}
 	}
 
 	return &dtos.ProjectDTO{
@@ -25,6 +40,7 @@ func ProjectToDTO(project *models.Project) (*dtos.ProjectDTO, error) {
 		Status:       string(project.Status),
 		Data:         data,
 		ClassGroupId: project.ClassGroupID,
+		Technologies: technologiesDTO,
 	}, nil
 }
 
@@ -39,7 +55,7 @@ func CreateRequestDTOToProject(createDTO *dtos.ProjectCreateRequestDTO) (*models
 		Name:         createDTO.Name,
 		Data:         datatypes.JSON(jsonBytes),
 		ClassGroupID: createDTO.ClassGroupId,
-		Status:       enums.StatusWaitingApproval, // default status
+		Status:       enums.StatusWaitingApproval,
 	}, nil
 }
 
@@ -50,7 +66,6 @@ func ProjectsToDTOs(projects []models.Project) ([]dtos.ProjectDTO, error) {
 		if err != nil {
 			return nil, err
 		}
-
 		result[i] = *dto
 	}
 	return result, nil

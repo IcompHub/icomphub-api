@@ -1,12 +1,13 @@
 package dtos
 
 type ProjectDTO struct {
-	Id           uint64         `json:"id"`
-	Slug         string         `json:"slug"`
-	Name         string         `json:"name"`
-	Status       string         `json:"status"`
-	Data         map[string]any `json:"data"` // JSON structure with title, resume, etc.
-	ClassGroupId uint64         `json:"class_group_id"`
+	Id           uint64          `json:"id"`
+	Slug         string          `json:"slug"`
+	Name         string          `json:"name"`
+	Status       string          `json:"status"`
+	Data         map[string]any  `json:"data"` // JSON structure with title, resume, etc.
+	ClassGroupId uint64          `json:"class_group_id"`
+	Technologies []TechnologyDTO `json:"technologies"`
 }
 
 type ProjectRequestDTO struct {
