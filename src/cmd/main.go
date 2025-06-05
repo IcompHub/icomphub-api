@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
+
 	"icomphub-api/controllers"
 	"icomphub-api/db"
 	"icomphub-api/docs"
@@ -76,6 +78,22 @@ func main() {
 	projectController := controllers.NewProjectController(projectService)
 
 	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController)
+
+	// --- INÍCIO DA CONFIGURAÇÃO CORS ---
+	// Configuração mais específica:
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"} // Permite a origem do seu frontend React/Next.js
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"} // Adicione 'Authorization' se você usa tokens JWT
+	config.AllowCredentials = true
+	// config.ExposeHeaders = []string{"Content-Length"} // Se o frontend precisar ler algum header específico da resposta
+
+	// Aplicar o middleware CORS ao router
+	router.Use(cors.New(config))
+
+	// Alternativamente, para uma configuração mais simples que permite qualquer origem (NÃO RECOMENDADO PARA PRODUÇÃO):
+	// router.Use(cors.Default())
+	// --- FIM DA CONFIGURAÇÃO CORS ---
 
 	router.GET("/swagger/*any", func(ctx *gin.Context) {
 		if ctx.Param("any") == "" || ctx.Param("any") == "/" {

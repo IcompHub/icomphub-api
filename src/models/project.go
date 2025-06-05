@@ -17,4 +17,5 @@ type Project struct {
 	ClassGroupID uint64           `json:"class_group_id" gorm:"not null"`
 	CreatedAt    time.Time        `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time        `json:"updated_at" gorm:"autoUpdateTime"`
+	Technologies []Technology     `gorm:"many2many:projects_technologies;"`
 }
