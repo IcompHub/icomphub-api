@@ -10,14 +10,6 @@ import (
 	"gorm.io/datatypes"
 )
 
-func TechnologyToDTO2(tech *models.Technology) dtos.TechnologyDTO {
-	return dtos.TechnologyDTO{
-		Id:   tech.ID,
-		Slug: tech.Slug,
-		Name: tech.Name,
-	}
-}
-
 func ProjectToDTO(project *models.Project) (*dtos.ProjectDTO, error) {
 	var data map[string]any
 
@@ -29,7 +21,7 @@ func ProjectToDTO(project *models.Project) (*dtos.ProjectDTO, error) {
 	var technologiesDTO []dtos.TechnologyDTO
 	if project.Technologies != nil {
 		for _, techModel := range project.Technologies {
-			technologiesDTO = append(technologiesDTO, TechnologyToDTO2(&techModel))
+			technologiesDTO = append(technologiesDTO, *TechnologyToDTO(&techModel))
 		}
 	}
 
