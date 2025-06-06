@@ -64,7 +64,7 @@ func (repository *projectRepository) CountAll(req *dtos.ProjectRequestDTO) (uint
 
 func (repository *projectRepository) Find(id uint64) (*models.Project, error) {
 	var project *models.Project
-	err := repository.db.Model(&models.Project{}).First(&project, id).Error
+	err := repository.db.Model(&models.Project{}).Preload("Technologies").First(&project, id).Error
 
 	return project, err
 }
