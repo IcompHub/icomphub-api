@@ -80,7 +80,15 @@ func main() {
 	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController)
 
 	// Need to be updated in the future to allow only authorized clients in production
-	router.Use(cors.Default())
+	config := cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: false,
+	}
+
+	router.Use(cors.New(config))
 
 	router.GET("/swagger/*any", func(ctx *gin.Context) {
 		if ctx.Param("any") == "" || ctx.Param("any") == "/" {
