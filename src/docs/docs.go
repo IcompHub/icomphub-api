@@ -48,20 +48,7 @@ const docTemplate = `{
                         "in": "query"
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ClassGroupDTO"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
-                        }
-                    }
-                }
+                "responses": {}
             },
             "post": {
                 "consumes": [
@@ -85,20 +72,7 @@ const docTemplate = `{
                         }
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/class_groups/{id}": {
@@ -119,20 +93,7 @@ const docTemplate = `{
                         "required": true
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
-                        }
-                    }
-                }
+                "responses": {}
             },
             "put": {
                 "consumes": [
@@ -163,20 +124,7 @@ const docTemplate = `{
                         }
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ClassGroupDTO"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
-                        }
-                    }
-                }
+                "responses": {}
             },
             "delete": {
                 "produces": [
@@ -195,20 +143,7 @@ const docTemplate = `{
                         "required": true
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
-                        }
-                    }
-                }
+                "responses": {}
             }
         },
         "/projects": {
@@ -319,7 +254,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ProjectDTO"
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_ProjectDetailDTO"
                         }
                     },
                     "500": {
@@ -925,7 +860,18 @@ const docTemplate = `{
                 }
             }
         },
-        "dtos.ClassGroupDTO": {
+        "dtos.ClassGroupUpdateRequestDTO": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.MemberRoleDTO": {
             "type": "object",
             "properties": {
                 "id": {
@@ -936,16 +882,19 @@ const docTemplate = `{
                 },
                 "slug": {
                     "type": "string"
-                },
-                "status": {
-                    "type": "string"
                 }
             }
         },
-        "dtos.ClassGroupUpdateRequestDTO": {
+        "dtos.MemberUserDTO": {
             "type": "object",
             "properties": {
-                "name": {
+                "full_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nickname": {
                     "type": "string"
                 },
                 "slug": {
@@ -1007,6 +956,62 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/dtos.TechnologyDTO"
                     }
+                }
+            }
+        },
+        "dtos.ProjectDetailDTO": {
+            "type": "object",
+            "properties": {
+                "class_group_id": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {}
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.ProjectMemberDTO"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "technologies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.TechnologyDTO"
+                    }
+                }
+            }
+        },
+        "dtos.ProjectMemberDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "role": {
+                    "$ref": "#/definitions/dtos.MemberRoleDTO"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/dtos.MemberUserDTO"
                 }
             }
         },
@@ -1164,33 +1169,6 @@ const docTemplate = `{
                 "RoleProfessor"
             ]
         },
-        "icomphub-api_dtos.PaginationDTO-dtos_ClassGroupDTO": {
-            "type": "object",
-            "properties": {
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/dtos.ClassGroupDTO"
-                    }
-                },
-                "page_number": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "page_size": {
-                    "type": "integer",
-                    "example": 10
-                },
-                "total_items": {
-                    "type": "integer",
-                    "example": 20
-                },
-                "total_pages": {
-                    "type": "integer",
-                    "example": 2
-                }
-            }
-        },
         "icomphub-api_dtos.PaginationDTO-dtos_ProjectDTO": {
             "type": "object",
             "properties": {
@@ -1293,29 +1271,6 @@ const docTemplate = `{
                 }
             }
         },
-        "icomphub-api_dtos.Response-dtos_ClassGroupDTO": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/codes.Code"
-                        }
-                    ],
-                    "example": "USER_CREATED"
-                },
-                "data": {
-                    "$ref": "#/definitions/dtos.ClassGroupDTO"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "User created successfully"
-                },
-                "success": {
-                    "type": "boolean"
-                }
-            }
-        },
         "icomphub-api_dtos.Response-dtos_ProjectDTO": {
             "type": "object",
             "properties": {
@@ -1329,6 +1284,29 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/dtos.ProjectDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-dtos_ProjectDetailDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/dtos.ProjectDetailDTO"
                 },
                 "message": {
                     "type": "string",
@@ -1375,29 +1353,6 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/dtos.UserDTO"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "User created successfully"
-                },
-                "success": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "icomphub-api_dtos.Response-icomphub-api_dtos_PaginationDTO-dtos_ClassGroupDTO": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/codes.Code"
-                        }
-                    ],
-                    "example": "USER_CREATED"
-                },
-                "data": {
-                    "$ref": "#/definitions/icomphub-api_dtos.PaginationDTO-dtos_ClassGroupDTO"
                 },
                 "message": {
                     "type": "string",

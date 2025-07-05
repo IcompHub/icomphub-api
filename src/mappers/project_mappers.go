@@ -62,3 +62,51 @@ func ProjectsToDTOs(projects []models.Project) ([]dtos.ProjectDTO, error) {
 	}
 	return result, nil
 }
+
+func ProjectToDetailDTO(project *models.Project) (*dtos.ProjectDetailDTO, error) {
+	var data map[string]any
+	if err := json.Unmarshal(project.Data, &data); err != nil {
+		return nil, err
+	}
+
+	var technologiesDTO []dtos.TechnologyDTO
+	if project.Technologies != nil {
+		for _, techModel := range project.Technologies {
+			technologiesDTO = append(technologiesDTO, *TechnologyToDTO(&techModel))
+		}
+	}
+
+	var membersDTO []dtos.ProjectMemberDTO
+	if project.Members != nil {
+		for _, memberModel := range project.Members {
+			memberDTO := dtos.ProjectMemberDTO{
+				Id:       memberModel.ID,
+				Nickname: memberModel.Nickname,
+				Status:   string(memberModel.Status),
+				User: dtos.MemberUserDTO{
+					Id:       memberModel.User.ID,
+					Slug:     memberModel.User.Slug,
+					Nickname: memberModel.User.Nickname,
+					FullName: memberModel.User.FullName,
+				},
+				Role: dtos.MemberRoleDTO{
+					Id:   memberModel.Role.ID,
+					Slug: memberModel.Role.Slug,
+					Name: memberModel.Role.Name,
+				},
+			}
+			membersDTO = append(membersDTO, memberDTO)
+		}
+	}
+
+	return &dtos.ProjectDetailDTO{
+		Id:           project.ID,
+		Slug:         project.Slug,
+		Name:         project.Name,
+		Status:       string(project.Status),
+		Data:         data,
+		ClassGroupId: project.ClassGroupID,
+		Technologies: technologiesDTO,
+		Members:      membersDTO,
+	}, nil
+}

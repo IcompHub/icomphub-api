@@ -21,8 +21,6 @@ func NewClassGroupController(service services.ClassGroupService) *ClassGroupCont
 // @Tags         class_groups
 // @Produce      json
 // @Param        ClassGroupRequestDTO  query dtos.ClassGroupRequestDTO  true  "ClassGroupRequestDTO"
-// @Success      200  {object}  dtos.Response[dtos.PaginationDTO[dtos.ClassGroupDTO]]
-// @Failure      500  {object}  dtos.Response[any]
 // @Router       /class_groups [get]
 func (controller *ClassGroupController) GetAll(ctx *gin.Context) {
 	var req dtos.ClassGroupRequestDTO
@@ -51,8 +49,6 @@ func (controller *ClassGroupController) GetAll(ctx *gin.Context) {
 // @Tags         class_groups
 // @Produce      json
 // @Param        id   path  uint64  true "ClassGroup ID"
-// @Success      200  {object}  dtos.Response[dtos.ClassGroupDTO]
-// @Failure      500  {object}  dtos.Response[any]
 // @Router       /class_groups/{id} [get]
 func (controller *ClassGroupController) Find(ctx *gin.Context) {
 	id, err := handlers.ValidateId(ctx)
@@ -81,8 +77,6 @@ func (controller *ClassGroupController) Find(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        ClassGroupCreateRequestDTO  body dtos.ClassGroupCreateRequestDTO  true "ClassGroupCreateRequestDTO"
-// @Success      200  {object}  dtos.Response[dtos.ClassGroupDTO]
-// @Failure      500  {object}  dtos.Response[any]
 // @Router       /class_groups [post]
 func (controller *ClassGroupController) Create(ctx *gin.Context) {
 	var req dtos.ClassGroupCreateRequestDTO
@@ -107,8 +101,6 @@ func (controller *ClassGroupController) Create(ctx *gin.Context) {
 // @Produce      json
 // @Param        id   path  uint64  true "ClassGroup ID"
 // @Param        ClassGroupUpdateRequestDTO  body dtos.ClassGroupUpdateRequestDTO  true "ClassGroupUpdateRequestDTO"
-// @Success      200  {object}  dtos.Response[dtos.ClassGroupDTO]
-// @Failure      500  {object}  dtos.Response[any]
 // @Router       /class_groups/{id} [put]
 func (controller *ClassGroupController) Update(ctx *gin.Context) {
 	id, err := handlers.ValidateId(ctx)
@@ -143,8 +135,6 @@ func (controller *ClassGroupController) Update(ctx *gin.Context) {
 // @Tags         class_groups
 // @Produce      json
 // @Param        id   path  uint64  true "ClassGroup ID"
-// @Success      200  {object}  dtos.Response[any]
-// @Failure      500  {object}  dtos.Response[any]
 // @Router       /class_groups/{id} [delete]
 func (controller *ClassGroupController) Delete(ctx *gin.Context) {
 	id, err := handlers.ValidateId(ctx)

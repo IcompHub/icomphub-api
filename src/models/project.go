@@ -8,14 +8,31 @@ import (
 	"gorm.io/datatypes"
 )
 
+type Member struct {
+	ID        uint64 `gorm:"primaryKey"`
+	Nickname  string
+	Status    string
+	ProjectID uint64
+	UserID    uint64
+	RoleID    uint64
+	CreatedAt time.Time
+	UpdatedAt time.Time
+
+	User User `gorm:"foreignKey:UserID"`
+	Role Role `gorm:"foreignKey:RoleID"`
+}
+
 type Project struct {
-	ID           uint64           `json:"id" gorm:"primaryKey;autoIncrement"`
-	Slug         string           `json:"slug" gorm:"unique;not null"`
-	Name         string           `json:"name" gorm:"unique;not null"`
-	Status       enums.StatusEnum `json:"status" gorm:"type:status_enum;default:'waiting_approval'"`
-	Data         datatypes.JSON   `json:"data" gorm:"type:jsonb;not null"`
-	ClassGroupID uint64           `json:"class_group_id" gorm:"not null"`
-	CreatedAt    time.Time        `json:"created_at" gorm:"autoCreateTime"`
-	UpdatedAt    time.Time        `json:"updated_at" gorm:"autoUpdateTime"`
-	Technologies []Technology     `gorm:"many2many:projects_technologies;"`
+	ID           uint64 `gorm:"primaryKey"`
+	Slug         string `gorm:"unique"`
+	Name         string `gorm:"unique"`
+	Status       string
+	Data         datatypes.JSON
+	ClassGroupID uint64
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+
+	Members []Member `gorm:"foreignKey:ProjectID"`
+
+	Technologies []Technology `gorm:"many2many:projects_technologies;"`
 }

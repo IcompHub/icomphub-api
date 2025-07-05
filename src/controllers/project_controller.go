@@ -51,7 +51,7 @@ func (controller *ProjectController) GetAll(ctx *gin.Context) {
 // @Tags         projects
 // @Produce      json
 // @Param        id   path  uint64  true "Project ID"
-// @Success      200  {object}  dtos.Response[dtos.ProjectDTO]
+// @Success      200  {object}  dtos.Response[dtos.ProjectDetailDTO]
 // @Failure      500  {object}  dtos.Response[any]
 // @Router       /projects/{id} [get]
 func (controller *ProjectController) Find(ctx *gin.Context) {

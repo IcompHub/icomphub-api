@@ -17,7 +17,7 @@ import (
 type ProjectService interface {
 	GetAll(req *dtos.ProjectRequestDTO) ([]dtos.ProjectDTO, codes.Code, error)
 	CountAll(req *dtos.ProjectRequestDTO) (uint64, codes.Code, error)
-	Find(id uint64) (*dtos.ProjectDTO, codes.Code, error)
+	Find(id uint64) (*dtos.ProjectDetailDTO, codes.Code, error)
 	Create(createDTO *dtos.ProjectCreateRequestDTO) (*dtos.ProjectDTO, codes.Code, error)
 	Delete(id uint64) (codes.Code, error)
 	Update(id uint64, updateDTO *dtos.ProjectUpdateRequestDTO) (*dtos.ProjectDTO, codes.Code, error)
@@ -79,13 +79,13 @@ func (service *projectService) CountAll(req *dtos.ProjectRequestDTO) (uint64, co
 	return count, codes.CountAllProjects, nil
 }
 
-func (service *projectService) Find(id uint64) (*dtos.ProjectDTO, codes.Code, error) {
+func (service *projectService) Find(id uint64) (*dtos.ProjectDetailDTO, codes.Code, error) {
 	project, code, err := service.find(id)
 	if err != nil {
 		return nil, code, err
 	}
 
-	mapper, err := mappers.ProjectToDTO(project)
+	mapper, err := mappers.ProjectToDetailDTO(project)
 	if err != nil {
 		return nil, codes.ErrorFindingProject, err
 	}
