@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"icomphub-api/enums"
+	//"icomphub-api/enums"
 
 	"gorm.io/datatypes"
 )

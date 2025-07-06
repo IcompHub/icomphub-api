@@ -29,7 +29,7 @@ func ProjectToDTO(project *models.Project) (*dtos.ProjectDTO, error) {
 		Id:           project.ID,
 		Slug:         project.Slug,
 		Name:         project.Name,
-		Status:       string(project.Status),
+		Status:       project.Status,
 		Data:         data,
 		ClassGroupId: project.ClassGroupID,
 		Technologies: technologiesDTO,
@@ -47,7 +47,7 @@ func CreateRequestDTOToProject(createDTO *dtos.ProjectCreateRequestDTO) (*models
 		Name:         createDTO.Name,
 		Data:         datatypes.JSON(jsonBytes),
 		ClassGroupID: createDTO.ClassGroupId,
-		Status:       enums.StatusWaitingApproval,
+		Status:       string(enums.StatusWaitingApproval),
 	}, nil
 }
 
@@ -103,7 +103,7 @@ func ProjectToDetailDTO(project *models.Project) (*dtos.ProjectDetailDTO, error)
 		Id:           project.ID,
 		Slug:         project.Slug,
 		Name:         project.Name,
-		Status:       string(project.Status),
+		Status:       project.Status,
 		Data:         data,
 		ClassGroupId: project.ClassGroupID,
 		Technologies: technologiesDTO,
