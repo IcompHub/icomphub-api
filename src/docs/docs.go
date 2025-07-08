@@ -15,6 +15,45 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/auth/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.LoginRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
         "/class_groups": {
             "get": {
                 "produces": [
@@ -605,6 +644,11 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -853,7 +897,13 @@ const docTemplate = `{
                 "error_finding_class_group",
                 "error_creating_class_group",
                 "error_updating_class_group",
-                "error_deleting_class_group"
+                "error_deleting_class_group",
+                "login_failed",
+                "login_success",
+                "auth_missing_token",
+                "auth_expired_token",
+                "role_access_denied",
+                "role_insufficient"
             ],
             "x-enum-varnames": [
                 "UnknowError",
@@ -905,7 +955,13 @@ const docTemplate = `{
                 "ErrorFindingClassGroup",
                 "ErrorCreatingClassGroup",
                 "ErrorUpdatingClassGroup",
-                "ErrorDeletingClassGroup"
+                "ErrorDeletingClassGroup",
+                "LoginFailed",
+                "LoginSuccess",
+                "AuthMissingToken",
+                "AuthExpiredToken",
+                "RoleAccessDenied",
+                "RoleInsufficient"
             ]
         },
         "dtos.ClassGroupCreateRequestDTO": {
@@ -949,6 +1005,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.LoginRequestDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -1476,6 +1547,36 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        },
+        "icomphub-api_dtos.Response-string": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

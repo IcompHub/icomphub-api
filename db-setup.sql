@@ -213,4 +213,4 @@ EXECUTE FUNCTION trigger_set_timestamp();
 
 INSERT INTO public.users (slug, nickname, full_name, personal_email, "password", status, system_role)
 VALUES
-('nelson', 'Nelson', 'Nelson Pereira de Carvalho Neto', 'nelson.dev@test.com', 'teste123', 'active', 'admin')
+('nelson', 'Nelson', 'Nelson Pereira de Carvalho Neto', 'nelson.dev@test.com', '$2a$10$mJnlRbmI3Z2t2EcBSJP4AuCw3N9ZdduIpK8FRvWyP3RMntrzqsOXC', 'active', 'admin')

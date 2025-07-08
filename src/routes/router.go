@@ -11,6 +11,7 @@ func SetupRouter(
 	techlonogyController *controllers.TechnologyController,
 	classGroupController *controllers.ClassGroupController,
 	projectController *controllers.ProjectController,
+	authController *controllers.AuthController,
 ) *gin.Engine {
 	r := gin.Default()
 
@@ -19,6 +20,7 @@ func SetupRouter(
 	RegisterTechnologyRoutes(group, techlonogyController)
 	RegisterClassGroupRoutes(group, classGroupController)
 	RegisterProjectRoutes(group, projectController)
+	RegisterAuthRoutes(group, authController)
 
 	return r
 }

@@ -27,6 +27,15 @@ func successHanlder(c *gin.Context, status int, code codes.Code, message string,
 	})
 }
 
+func abortHanlder(c *gin.Context, status int, code codes.Code, message string) {
+	c.AbortWithStatusJSON(status, dtos.Response[any]{
+		Success: false,
+		Code:    code,
+		Message: message,
+		Data:    nil,
+	})
+}
+
 func Ok(c *gin.Context, code codes.Code, message string, data any) {
 	successHanlder(c, http.StatusOK, code, message, data)
 }
@@ -45,4 +54,16 @@ func NotFound(c *gin.Context, code codes.Code, err error) {
 
 func Forbidden(c *gin.Context, code codes.Code, err error) {
 	errorHanlder(c, http.StatusForbidden, code, err.Error())
+}
+
+func Unauthorized(c *gin.Context, code codes.Code, err error) {
+	errorHanlder(c, http.StatusUnauthorized, code, err.Error())
+}
+
+func AbortForbidden(c *gin.Context, code codes.Code, err error) {
+	abortHanlder(c, http.StatusForbidden, code, err.Error())
+}
+
+func AbortUnauthorized(c *gin.Context, code codes.Code, err error) {
+	abortHanlder(c, http.StatusUnauthorized, code, err.Error())
 }
