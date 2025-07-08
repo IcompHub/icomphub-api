@@ -20,6 +20,7 @@ DB_PORT=5416
 DB_USER=icomphub
 DB_PASSWORD=development0nly
 DB_NAME=icomphub
+JWT_SECRET=ijustwannathistobeover
 ```
 
 ## Setup DB

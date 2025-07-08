@@ -85,5 +85,6 @@ jobs:
               -e DB_USER=${{ vars.DB_USER_STAGING }} \
               -e DB_PASSWORD=${{ secrets.DB_PW_STAGING }} \
               -e DB_NAME=${{ vars.DB_STAGING }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET_STAGING }} \
               icomphub-api-staging:latest
           EOF

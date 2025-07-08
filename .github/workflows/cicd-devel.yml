@@ -85,5 +85,6 @@ jobs:
               -e DB_USER=${{ vars.DB_USER_DEVEL }} \
               -e DB_PASSWORD=${{ secrets.DB_PW_DEVEL }} \
               -e DB_NAME=${{ vars.DB_DEVEL }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET_DEVEL }} \
               icomphub-api-devel:latest
           EOF
