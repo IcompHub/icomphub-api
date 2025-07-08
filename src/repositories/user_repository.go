@@ -13,6 +13,7 @@ type UserRepository interface {
 	GetAll(req *dtos.UserRequestDTO) ([]models.User, error)
 	CountAll(req *dtos.UserRequestDTO) (uint64, error)
 	Find(id uint64) (*models.User, error)
+	FindByEmail(email string) (*models.User, error)
 	Create(user *models.User) error
 	Delete(user *models.User) error
 	Update(user *models.User) error
@@ -63,6 +64,15 @@ func (repository *userRepository) Find(id uint64) (*models.User, error) {
 	err := repository.db.Model(&models.User{}).First(&user, id).Error
 
 	return user, err
+}
+
+func (repository *userRepository) FindByEmail(email string) (*models.User, error) {
+	var user models.User
+	err := repository.db.Model(&models.User{}).Where("personal_email = ?", email).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (repository *userRepository) Create(user *models.User) error {

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strings"
 
+	"icomphub-api/auth"
 	"icomphub-api/codes"
 	"icomphub-api/dtos"
 	"icomphub-api/mappers"
@@ -106,7 +107,13 @@ func (service *userService) Find(id uint64) (*dtos.UserDTO, codes.Code, error) {
 func (service *userService) Create(createDTO *dtos.UserCreateRequestDTO) (*dtos.UserDTO, codes.Code, error) {
 	user := mappers.CreateRequestDTOToUser(createDTO)
 
-	err := service.validateUser(user, true)
+	hashedPassword, err := auth.HashPassword(createDTO.Password)
+	if err != nil {
+		return nil, codes.ErrorCreatingUser, err
+	}
+	user.Password = hashedPassword
+
+	err = service.validateUser(user, true)
 	if err != nil {
 		return nil, codes.InvalidParams, err
 	}

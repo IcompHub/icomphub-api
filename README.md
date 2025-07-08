@@ -24,7 +24,7 @@ DB_NAME=icomphub
 
 ## Setup DB
 
-Inside the `db-setup.sql` file there is a sql script to create all tables, enums and data required to run de app, make shure to run it at you db
+Inside the `db-setup.sql` file there is a sql script to create all tables, enums and data required to run de app, make shure to run it at you db with correct db name
 
 ## Run Docker
 
@@ -44,9 +44,11 @@ Your api should start running at port 8016, take a look at http://localhost:8016
 ```
 docker compose -f ./docker/ci/ci.compose.yaml -p icomphub-api-ci up
 ```
+
 ## How to update Swagger
 
 To generate or update the Swagger documentation, run the following command from the root of the project
+
 ```
 sudo docker exec -it -u 0 icomphub-api /bin/sh
 ```

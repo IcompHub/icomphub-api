@@ -51,6 +51,12 @@ definitions:
     - error_creating_class_group
     - error_updating_class_group
     - error_deleting_class_group
+    - login_failed
+    - login_success
+    - auth_missing_token
+    - auth_expired_token
+    - role_access_denied
+    - role_insufficient
     type: string
     x-enum-varnames:
     - UnknowError
@@ -103,6 +109,12 @@ definitions:
     - ErrorCreatingClassGroup
     - ErrorUpdatingClassGroup
     - ErrorDeletingClassGroup
+    - LoginFailed
+    - LoginSuccess
+    - AuthMissingToken
+    - AuthExpiredToken
+    - RoleAccessDenied
+    - RoleInsufficient
   dtos.ClassGroupCreateRequestDTO:
     properties:
       name:
@@ -132,6 +144,16 @@ definitions:
         type: string
       slug:
         type: string
+    type: object
+  dtos.LoginRequestDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
     type: object
   dtos.ProjectCreateRequestDTO:
     properties:
@@ -480,9 +502,48 @@ definitions:
       success:
         type: boolean
     type: object
+  icomphub-api_dtos.Response-string:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/codes.Code'
+        example: USER_CREATED
+      data:
+        type: string
+      message:
+        example: User created successfully
+        type: string
+      success:
+        type: boolean
+    type: object
 info:
   contact: {}
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-string'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Login user
+      tags:
+      - auth
   /class_groups:
     get:
       parameters:
@@ -900,6 +961,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      security:
+      - BearerAuth: []
       summary: List all users
       tags:
       - users
@@ -999,4 +1062,9 @@ paths:
       summary: Update an user
       tags:
       - users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
