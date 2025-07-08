@@ -20,6 +20,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	isInProd := os.Getenv("IN_PRODUCTION")
 
@@ -65,6 +68,9 @@ func main() {
 	userService := services.NewUserService(userRepository)
 	userController := controllers.NewUserController(userService)
 
+	authService := services.NewAuthService(userRepository)
+	authController := controllers.NewAuthController(authService)
+
 	technologyRepository := repositories.NewTechnologyRepository(dbConnection)
 	technologyService := services.NewTechnologyService(technologyRepository)
 	technologyController := controllers.NewTechnologyController(technologyService)
@@ -77,7 +83,7 @@ func main() {
 	projectService := services.NewProjectService(projectRepository)
 	projectController := controllers.NewProjectController(projectService)
 
-	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController)
+	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController, authController)
 
 	// Need to be updated in the future to allow only authorized clients in production
 	config := cors.Config{

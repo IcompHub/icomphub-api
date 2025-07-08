@@ -63,4 +63,13 @@ const (
 	ErrorCreatingClassGroup     Code = "error_creating_class_group"
 	ErrorUpdatingClassGroup     Code = "error_updating_class_group"
 	ErrorDeletingClassGroup     Code = "error_deleting_class_group"
+
+	LoginFailed  Code = "login_failed"
+	LoginSuccess Code = "login_success"
+
+	AuthMissingToken Code = "auth_missing_token"
+	AuthExpiredToken Code = "auth_expired_token"
+
+	RoleAccessDenied Code = "role_access_denied"
+	RoleInsufficient Code = "role_insufficient"
 )

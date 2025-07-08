@@ -18,6 +18,7 @@ func NewUserController(service services.UserService) *UserController {
 }
 
 // @Summary      List all users
+// @Security BearerAuth
 // @Tags         users
 // @Produce      json
 // @Param        UserRequestDTO  query dtos.UserRequestDTO  true  "UserRequestDTO"
