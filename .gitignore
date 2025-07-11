@@ -1,2 +1,4 @@
 src/builds
 src/tmp
+src/static
+*.DS_Store

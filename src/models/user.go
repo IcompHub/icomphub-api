@@ -14,6 +14,7 @@ type User struct {
 	PersonalEmail      string               `json:"personal_email" gorm:"unique;not null"`
 	InstitutionalEmail *string              `json:"institutional_email,omitempty" gorm:"unique"`
 	Registration       *string              `json:"registration,omitempty" gorm:"unique"`
+	ProfilePictureId   *string              `json:"profile_picture_id"`
 	Password           string               `json:"-" gorm:"not null"` // do not show
 	Status             enums.StatusEnum     `json:"status" gorm:"type:status_enum;default:'waiting_approval'"`
 	SystemRole         enums.SystemRoleEnum `json:"system_role" gorm:"type:system_role_enum;default:'user'"`

@@ -733,6 +733,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/profile-picture": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user profile picture",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "User profile picture image",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}": {
             "get": {
                 "produces": [
@@ -902,8 +950,15 @@ const docTemplate = `{
                 "login_success",
                 "auth_missing_token",
                 "auth_expired_token",
+                "auth_invalid_token",
+                "auth_valid_token",
                 "role_access_denied",
-                "role_insufficient"
+                "role_insufficient",
+                "file_invalid_type",
+                "file_could_not_open",
+                "file_could_not_find_target_dir",
+                "file_could_not_save",
+                "file_saved"
             ],
             "x-enum-varnames": [
                 "UnknowError",
@@ -960,8 +1015,15 @@ const docTemplate = `{
                 "LoginSuccess",
                 "AuthMissingToken",
                 "AuthExpiredToken",
+                "AuthInvalidToken",
+                "AuthValidToken",
                 "RoleAccessDenied",
-                "RoleInsufficient"
+                "RoleInsufficient",
+                "FileInvalidType",
+                "FileCouldNotOpen",
+                "FileCouldNotFindTargetDir",
+                "FileCouldNotSave",
+                "FileSaved"
             ]
         },
         "dtos.ClassGroupCreateRequestDTO": {
@@ -1189,6 +1251,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "personal_email": {
+                    "type": "string"
+                },
+                "profile_picture_id": {
                     "type": "string"
                 },
                 "role": {

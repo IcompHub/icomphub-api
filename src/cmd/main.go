@@ -10,6 +10,7 @@ import (
 	"icomphub-api/controllers"
 	"icomphub-api/db"
 	"icomphub-api/docs"
+	"icomphub-api/files"
 	"icomphub-api/repositories"
 	"icomphub-api/routes"
 	"icomphub-api/services"
@@ -64,8 +65,10 @@ func main() {
 
 	swaggerURL := ginSwagger.URL("/swagger/doc.json")
 
+	uploadService := files.NewLocalFileUploadService("./static/uploads")
+
 	userRepository := repositories.NewUserRepository(dbConnection)
-	userService := services.NewUserService(userRepository)
+	userService := services.NewUserService(userRepository, uploadService)
 	userController := controllers.NewUserController(userService)
 
 	authService := services.NewAuthService(userRepository)
