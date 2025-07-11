@@ -37,7 +37,7 @@ func (service *classGroupService) find(id uint64) (*models.ClassGroup, codes.Cod
 	return classGroup, codes.FindClassGroup, nil
 }
 
-func (service *classGroupService) validateClassGroup(classGroup *models.ClassGroup, isCreating bool) error {
+func (service *classGroupService) validateClassGroup(classGroup *models.ClassGroup) error {
 	if strings.TrimSpace(classGroup.Name) == "" {
 		return errors.New("invalid class group name")
 	}
@@ -71,7 +71,7 @@ func (service *classGroupService) Find(id uint64) (*dtos.ClassGroupDTO, codes.Co
 func (service *classGroupService) Create(createDTO *dtos.ClassGroupCreateRequestDTO) (*dtos.ClassGroupDTO, codes.Code, error) {
 	classGroup := mappers.CreateRequestDTOToClassGroup(createDTO)
 
-	err := service.validateClassGroup(classGroup, true)
+	err := service.validateClassGroup(classGroup)
 	if err != nil {
 		return nil, codes.InvalidParams, err
 	}
@@ -108,7 +108,7 @@ func (service *classGroupService) Update(id uint64, updateDTO *dtos.ClassGroupUp
 		classGroup.Name = *updateDTO.Name
 	}
 
-	err = service.validateClassGroup(classGroup, false)
+	err = service.validateClassGroup(classGroup)
 	if err != nil {
 		return nil, codes.InvalidParams, err
 	}

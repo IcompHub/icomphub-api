@@ -40,7 +40,7 @@ func (service *projectService) find(id uint64) (*models.Project, codes.Code, err
 	return project, codes.FindProject, nil
 }
 
-func (service *projectService) validateProject(project *models.Project, isCreating bool) error {
+func (service *projectService) validateProject(project *models.Project) error {
 	if strings.TrimSpace(project.Name) == "" {
 		return errors.New("invalid project name")
 	}
@@ -99,7 +99,7 @@ func (service *projectService) Create(createDTO *dtos.ProjectCreateRequestDTO) (
 		return nil, codes.ErrorCreatingProject, err
 	}
 
-	err = service.validateProject(project, true)
+	err = service.validateProject(project)
 	if err != nil {
 		return nil, codes.InvalidParams, err
 	}
@@ -153,7 +153,7 @@ func (service *projectService) Update(id uint64, updateDTO *dtos.ProjectUpdateRe
 		project.Data = datatypes.JSON(jsonBytes)
 	}
 
-	err = service.validateProject(project, false)
+	err = service.validateProject(project)
 	if err != nil {
 		return nil, codes.InvalidParams, err
 	}

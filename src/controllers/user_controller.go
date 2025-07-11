@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"icomphub-api/auth"
 	"icomphub-api/codes"
 	"icomphub-api/dtos"
 	"icomphub-api/handlers"
@@ -178,4 +179,30 @@ func (controller *UserController) Delete(context *gin.Context) {
 	}
 
 	handlers.Ok(context, codes.DeleteUser, "user deleted with success", nil)
+}
+
+// @Summary      Update user profile picture
+// @Tags         users
+// @Security BearerAuth
+// @Accept multipart/form-data
+// @Produce json
+// @Param image formData file true "User profile picture image"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /users/profile-picture [post]
+func (controller *UserController) UpdateProfilePicture(context *gin.Context) {
+	userID, code, err := auth.GetUserIDFromToken(context)
+	if err != nil {
+		handlers.Unauthorized(context, code, err)
+		return
+	}
+
+	image, err := context.FormFile("image")
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+	}
+
+	user, code, err := controller.service.UpdateProfilePicture(userID, image)
+
+	handlers.Ok(context, codes.UpdateUser, "user upadated with success", user)
 }

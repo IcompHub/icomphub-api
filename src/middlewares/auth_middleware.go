@@ -9,7 +9,6 @@ import (
 	"icomphub-api/handlers"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -22,9 +21,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 
-		token, err := jwt.ParseWithClaims(tokenStr, &auth.Claims{}, func(token *jwt.Token) (interface{}, error) {
-			return auth.JwtSecret, nil
-		})
+		token, err := auth.GetTokenData(tokenStr)
 
 		if err != nil || !token.Valid {
 			handlers.AbortUnauthorized(ctx, codes.AuthExpiredToken, errors.New("invalid or expired token"))
