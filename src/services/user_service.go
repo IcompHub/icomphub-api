@@ -2,11 +2,13 @@ package services
 
 import (
 	"errors"
+	"mime/multipart"
 	"strings"
 
 	"icomphub-api/auth"
 	"icomphub-api/codes"
 	"icomphub-api/dtos"
+	"icomphub-api/files"
 	"icomphub-api/mappers"
 	"icomphub-api/models"
 	"icomphub-api/repositories"
@@ -19,14 +21,16 @@ type UserService interface {
 	Create(createDTO *dtos.UserCreateRequestDTO) (*dtos.UserDTO, codes.Code, error)
 	Delete(id uint64) (codes.Code, error)
 	Update(id uint64, updateDTO *dtos.UserUpdateRequestDTO) (*dtos.UserDTO, codes.Code, error)
+	UpdateProfilePicture(id uint64, image *multipart.FileHeader) (*dtos.UserDTO, codes.Code, error)
 }
 
 type userService struct {
-	repository repositories.UserRepository
+	repository  repositories.UserRepository
+	fileService files.FileUploadService
 }
 
-func NewUserService(repo repositories.UserRepository) UserService {
-	return &userService{repository: repo}
+func NewUserService(repo repositories.UserRepository, fileService files.FileUploadService) UserService {
+	return &userService{repository: repo, fileService: fileService}
 }
 
 func (service *userService) find(id uint64) (*models.User, codes.Code, error) {
@@ -165,6 +169,36 @@ func (service *userService) Update(id uint64, updateDTO *dtos.UserUpdateRequestD
 	user.Registration = updateDTO.Registration
 
 	user.InstitutionalEmail = updateDTO.InstitutionalEmail
+
+	err = service.validateUser(user, false)
+	if err != nil {
+		return nil, codes.InvalidParams, err
+	}
+
+	err = service.repository.Update(user)
+	if err != nil {
+		return mappers.UserToDTO(user), codes.ErrorUpdatingUser, err
+	}
+
+	return mappers.UserToDTO(user), codes.UpdateUser, nil
+}
+
+func (service *userService) UpdateProfilePicture(id uint64, image *multipart.FileHeader) (*dtos.UserDTO, codes.Code, error) {
+	user, code, err := service.find(id)
+	if err != nil {
+		return nil, code, err
+	}
+
+	path, code, err := service.fileService.SaveFile(image, files.UploadConfig{
+		TargetFolder: "users",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
+	}
+
+	user.ProfilePictureId = &path
 
 	err = service.validateUser(user, false)
 	if err != nil {

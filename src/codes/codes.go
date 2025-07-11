@@ -69,7 +69,15 @@ const (
 
 	AuthMissingToken Code = "auth_missing_token"
 	AuthExpiredToken Code = "auth_expired_token"
+	AuthInvalidToken Code = "auth_invalid_token"
+	AuthValidToken   Code = "auth_valid_token"
 
 	RoleAccessDenied Code = "role_access_denied"
 	RoleInsufficient Code = "role_insufficient"
+
+	FileInvalidType           Code = "file_invalid_type"
+	FileCouldNotOpen          Code = "file_could_not_open"
+	FileCouldNotFindTargetDir Code = "file_could_not_find_target_dir"
+	FileCouldNotSave          Code = "file_could_not_save"
+	FileSaved                 Code = "file_saved"
 )

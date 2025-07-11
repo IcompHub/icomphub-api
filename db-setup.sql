@@ -20,6 +20,7 @@ CREATE TABLE users (
         institutional_email IS NULL OR position('@' in institutional_email) > 1
     ),
     registration TEXT UNIQUE,
+    profile_picture_id TEXT,
     password TEXT NOT NULL,
     status status_enum NOT NULL DEFAULT 'waiting_approval',
     system_role system_role_enum NOT NULL DEFAULT 'user',

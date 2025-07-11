@@ -7,11 +7,12 @@ import (
 
 func UserToDTO(user *models.User) *dtos.UserDTO {
 	return &dtos.UserDTO{
-		Id:            user.ID,
-		Slug:          user.Slug,
-		Nickname:      user.Nickname,
-		PersonalEmail: user.PersonalEmail,
-		Role:          user.SystemRole,
+		Id:               user.ID,
+		Slug:             user.Slug,
+		Nickname:         user.Nickname,
+		PersonalEmail:    user.PersonalEmail,
+		ProfilePictureId: user.ProfilePictureId,
+		Role:             user.SystemRole,
 	}
 }
 

@@ -55,8 +55,15 @@ definitions:
     - login_success
     - auth_missing_token
     - auth_expired_token
+    - auth_invalid_token
+    - auth_valid_token
     - role_access_denied
     - role_insufficient
+    - file_invalid_type
+    - file_could_not_open
+    - file_could_not_find_target_dir
+    - file_could_not_save
+    - file_saved
     type: string
     x-enum-varnames:
     - UnknowError
@@ -113,8 +120,15 @@ definitions:
     - LoginSuccess
     - AuthMissingToken
     - AuthExpiredToken
+    - AuthInvalidToken
+    - AuthValidToken
     - RoleAccessDenied
     - RoleInsufficient
+    - FileInvalidType
+    - FileCouldNotOpen
+    - FileCouldNotFindTargetDir
+    - FileCouldNotSave
+    - FileSaved
   dtos.ClassGroupCreateRequestDTO:
     properties:
       name:
@@ -270,6 +284,8 @@ definitions:
       nickname:
         type: string
       personal_email:
+        type: string
+      profile_picture_id:
         type: string
       role:
         $ref: '#/definitions/enums.SystemRoleEnum'
@@ -1060,6 +1076,36 @@ paths:
           schema:
             $ref: '#/definitions/icomphub-api_dtos.Response-any'
       summary: Update an user
+      tags:
+      - users
+  /users/profile-picture:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: User profile picture image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update user profile picture
       tags:
       - users
 securityDefinitions:
