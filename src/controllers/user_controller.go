@@ -214,7 +214,6 @@ func (controller *UserController) UpdateProfilePicture(context *gin.Context) {
 // @Summary      Delete user profile picture
 // @Tags         users
 // @Security BearerAuth
-// @Accept multipart/form-data
 // @Produce json
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
@@ -238,7 +237,6 @@ func (controller *UserController) DeleteProfilePicture(context *gin.Context) {
 // @Summary      Get user profile picture
 // @Tags         users
 // @Security BearerAuth
-// @Accept multipart/form-data
 // @Produce json
 // @Success      200 {file} file
 // @Failure 400 {object} map[string]string
@@ -247,6 +245,30 @@ func (controller *UserController) GetProfilePicture(context *gin.Context) {
 	userID, code, err := auth.GetUserIDFromToken(context)
 	if err != nil {
 		handlers.Unauthorized(context, code, err)
+		return
+	}
+
+	fullPath, code, err := controller.service.GetProfilePictureFullPath(userID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	context.File(fullPath)
+}
+
+// @Summary      Get user profile picture by ID
+// @Tags         users
+// @Security BearerAuth
+// @Param        id   path  uint64  true "User ID"
+// @Produce json
+// @Success      200 {file} file
+// @Failure 400 {object} map[string]string
+// @Router /users/profile-picture/{id} [get]
+func (controller *UserController) GetProfilePictureById(context *gin.Context) {
+	userID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
 		return
 	}
 
