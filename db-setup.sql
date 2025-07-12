@@ -165,6 +165,7 @@ CREATE TABLE projects (
     slug TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL UNIQUE,
     status status_enum NOT NULL DEFAULT 'waiting_approval',
+    thumbnail_id TEXT,
     data JSONB NOT NULL,
     class_group_id INTEGER NOT NULL REFERENCES class_groups(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -173,6 +174,21 @@ CREATE TABLE projects (
 
 CREATE TRIGGER set_timestamp_projects
 BEFORE UPDATE ON projects
+FOR EACH ROW
+EXECUTE FUNCTION trigger_set_timestamp();
+
+CREATE TABLE project_images (
+    id SERIAL PRIMARY KEY,
+    project_id INTEGER NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+    image_id TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    UNIQUE (image_id)
+);
+
+CREATE TRIGGER set_timestamp_project_images
+BEFORE UPDATE ON project_images
 FOR EACH ROW
 EXECUTE FUNCTION trigger_set_timestamp();
 

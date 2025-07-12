@@ -1240,6 +1240,12 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "image_ids": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.ProjectImageDTO"
+                    }
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1254,6 +1260,20 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/dtos.TechnologyDTO"
                     }
+                },
+                "thumbnail_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.ProjectImageDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "image_id": {
+                    "type": "string"
                 }
             }
         },

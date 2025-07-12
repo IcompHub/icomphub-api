@@ -25,14 +25,23 @@ func ProjectToDTO(project *models.Project) (*dtos.ProjectDTO, error) {
 		}
 	}
 
+	var imagesDTO []dtos.ProjectImageDTO
+	if project.ProjectImages != nil {
+		for _, imageModel := range project.ProjectImages {
+			imagesDTO = append(imagesDTO, *ProjectImageToDTO(&imageModel))
+		}
+	}
+
 	return &dtos.ProjectDTO{
 		Id:           project.ID,
 		Slug:         project.Slug,
 		Name:         project.Name,
 		Status:       string(project.Status),
+		ThumbnailID:  project.ThumbnailID,
 		Data:         data,
 		ClassGroupId: project.ClassGroupID,
 		Technologies: technologiesDTO,
+		ImageIDs:     imagesDTO,
 	}, nil
 }
 

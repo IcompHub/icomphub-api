@@ -13,9 +13,12 @@ type Project struct {
 	Slug         string           `json:"slug" gorm:"unique;not null"`
 	Name         string           `json:"name" gorm:"unique;not null"`
 	Status       enums.StatusEnum `json:"status" gorm:"type:status_enum;default:'waiting_approval'"`
+	ThumbnailID  *string          `json:"thumbnail_id"`
 	Data         datatypes.JSON   `json:"data" gorm:"type:jsonb;not null"`
-	ClassGroupID uint64           `json:"class_group_id" gorm:"not null"`
+	ClassGroupID uint64           `json:"class_group_id" gorm:"not null;index"`
 	CreatedAt    time.Time        `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time        `json:"updated_at" gorm:"autoUpdateTime"`
 	Technologies []Technology     `gorm:"many2many:projects_technologies;"`
+
+	ProjectImages []ProjectImage `json:"project_images" gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
 }

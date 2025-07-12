@@ -206,6 +206,10 @@ definitions:
         type: object
       id:
         type: integer
+      image_ids:
+        items:
+          $ref: '#/definitions/dtos.ProjectImageDTO'
+        type: array
       name:
         type: string
       slug:
@@ -216,6 +220,15 @@ definitions:
         items:
           $ref: '#/definitions/dtos.TechnologyDTO'
         type: array
+      thumbnail_id:
+        type: string
+    type: object
+  dtos.ProjectImageDTO:
+    properties:
+      id:
+        type: integer
+      image_id:
+        type: string
     type: object
   dtos.ProjectUpdateRequestDTO:
     properties:
