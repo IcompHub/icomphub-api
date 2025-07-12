@@ -256,6 +256,8 @@ definitions:
     type: object
   dtos.TechnologyDTO:
     properties:
+      has_image:
+        type: boolean
       id:
         type: integer
       name:
@@ -1171,6 +1173,92 @@ paths:
           schema:
             $ref: '#/definitions/icomphub-api_dtos.Response-any'
       summary: Update a technology
+      tags:
+      - technologies
+  /technologies/image/{id}:
+    delete:
+      parameters:
+      - description: Technology ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: delete technology image
+      tags:
+      - technologies
+    get:
+      parameters:
+      - description: technology Image ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get technology image
+      tags:
+      - technologies
+    put:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: Technology ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: updated technology image
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update technology image
       tags:
       - technologies
   /users:

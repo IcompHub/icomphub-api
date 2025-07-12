@@ -178,3 +178,82 @@ func (controller *TechnologyController) Delete(context *gin.Context) {
 
 	handlers.Ok(context, codes.DeleteTechnology, "technology deleted with success", nil)
 }
+
+// @Summary      Update technology image
+// @Tags         technologies
+// @Security BearerAuth
+// @Accept multipart/form-data
+// @Produce json
+// @Param        id   path  uint64  true "Technology ID"
+// @Param image formData file false "updated technology image"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router       /technologies/image/{id} [put]
+func (controller *TechnologyController) UpdateImage(context *gin.Context) {
+	techID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	image, err := context.FormFile("image")
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+	}
+
+	technologyImage, code, err := controller.service.UpdateImage(techID, image)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, code, "technology image updated with success", technologyImage)
+}
+
+// @Summary      delete technology image
+// @Tags         technologies
+// @Security BearerAuth
+// @Produce json
+// @Param        id   path  uint64  true "Technology ID"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router       /technologies/image/{id} [delete]
+func (controller *TechnologyController) DeleteImage(context *gin.Context) {
+	techID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	code, err := controller.service.DeleteImage(techID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, code, "technology image deleted with success", nil)
+}
+
+// @Summary      Get technology image
+// @Tags         technologies
+// @Security BearerAuth
+// @Param        id   path  uint64  true "technology Image ID"
+// @Produce json
+// @Success      200 {file} file
+// @Failure 400 {object} map[string]string
+// @Router       /technologies/image/{id} [get]
+func (controller *TechnologyController) GetImage(context *gin.Context) {
+	techID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	fullPath, code, err := controller.service.GetImageFullPath(techID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	context.File(fullPath)
+}

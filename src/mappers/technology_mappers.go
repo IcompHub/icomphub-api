@@ -7,9 +7,10 @@ import (
 
 func TechnologyToDTO(technology *models.Technology) *dtos.TechnologyDTO {
 	return &dtos.TechnologyDTO{
-		Id:   technology.ID,
-		Slug: technology.Slug,
-		Name: technology.Name,
+		Id:       technology.ID,
+		Slug:     technology.Slug,
+		Name:     technology.Name,
+		HasImage: technology.ImageID != nil,
 	}
 }
 

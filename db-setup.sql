@@ -105,6 +105,7 @@ CREATE TABLE technologies (
     id SERIAL PRIMARY KEY,
     slug TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL UNIQUE,
+    image_id TEXT,
     status status_enum NOT NULL DEFAULT 'waiting_approval',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

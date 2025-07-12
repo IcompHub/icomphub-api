@@ -1,9 +1,10 @@
 package dtos
 
 type TechnologyDTO struct {
-	Id   uint64 `json:"id"`
-	Slug string `json:"slug"`
-	Name string `json:"name"`
+	Id       uint64 `json:"id"`
+	Slug     string `json:"slug"`
+	Name     string `json:"name"`
+	HasImage bool   `json:"has_image"`
 }
 
 type TechnologyRequestDTO struct {
