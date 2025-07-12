@@ -8,7 +8,6 @@ import (
 	"mime/multipart"
 	"os"
 	"path/filepath"
-	"time"
 
 	"icomphub-api/codes"
 )
@@ -50,7 +49,7 @@ func (s *LocalFileUploadService) SaveFile(fileHeader *multipart.FileHeader, conf
 	randomString := hex.EncodeToString(randomBytes)
 
 	// Final filename: <timestamp>_<random>.ext
-	filename := fmt.Sprintf("%d_%s%s", time.Now().UnixNano(), randomString, ext)
+	filename := fmt.Sprintf("%s%s", randomString, ext)
 
 	// Build target path
 	relPath := filepath.Join(config.TargetFolder, filename)

@@ -246,3 +246,113 @@ func (controller *ProjectController) GetThumbnail(context *gin.Context) {
 
 	context.File(fullPath)
 }
+
+// @Summary      Create new project image
+// @Tags         projects
+// @Security BearerAuth
+// @Accept multipart/form-data
+// @Produce json
+// @Param        id   path  uint64  true "Project ID"
+// @Param image formData file false "new project image"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router       /projects/images/{id} [post]
+func (controller *ProjectController) CreateImage(context *gin.Context) {
+	projectID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	image, err := context.FormFile("image")
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+	}
+
+	projectImage, code, err := controller.service.CreateImage(projectID, image)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, code, "project image created with success", projectImage)
+}
+
+// @Summary      Update project image
+// @Tags         projects
+// @Security BearerAuth
+// @Accept multipart/form-data
+// @Produce json
+// @Param        id   path  uint64  true "Image ID"
+// @Param image formData file false "updated project image"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router       /projects/images/{id} [put]
+func (controller *ProjectController) UpdateImage(context *gin.Context) {
+	imageID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	image, err := context.FormFile("image")
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+	}
+
+	projectImage, code, err := controller.service.UpdateImage(imageID, image)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, code, "project image updated with success", projectImage)
+}
+
+// @Summary      delete project image
+// @Tags         projects
+// @Security BearerAuth
+// @Produce json
+// @Param        id   path  uint64  true "Image ID"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router       /projects/images/{id} [delete]
+func (controller *ProjectController) DeleteImage(context *gin.Context) {
+	imageID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	code, err := controller.service.DeleteImage(imageID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, code, "project image deleted with success", nil)
+}
+
+// @Summary      Get project image
+// @Tags         projects
+// @Security BearerAuth
+// @Param        id   path  uint64  true "Project Image ID"
+// @Produce json
+// @Success      200 {file} file
+// @Failure 400 {object} map[string]string
+// @Router       /projects/images/{id} [get]
+func (controller *ProjectController) GetImage(context *gin.Context) {
+	imageID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	fullPath, code, err := controller.service.GetImageFullPath(imageID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	context.File(fullPath)
+}

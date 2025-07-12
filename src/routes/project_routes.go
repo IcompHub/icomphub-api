@@ -17,4 +17,8 @@ func RegisterProjectRoutes(rg *gin.RouterGroup, projectController *controllers.P
 	projectRoute.POST("/thumbnail/:id", middlewares.AuthMiddleware(), projectController.UpdateThumbnail)
 	projectRoute.DELETE("/thumbnail/:id", middlewares.AuthMiddleware(), projectController.DeleteThumbnail)
 	projectRoute.GET("/thumbnail/:id", projectController.GetThumbnail)
+	projectRoute.POST("/images/:id", middlewares.AuthMiddleware(), projectController.CreateImage)
+	projectRoute.PUT("/images/:id", middlewares.AuthMiddleware(), projectController.UpdateImage)
+	projectRoute.DELETE("/images/:id", middlewares.AuthMiddleware(), projectController.DeleteImage)
+	projectRoute.GET("/images/:id", middlewares.AuthMiddleware(), projectController.GetImage)
 }
