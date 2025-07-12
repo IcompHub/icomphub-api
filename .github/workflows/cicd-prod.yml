@@ -75,8 +75,8 @@ jobs:
 
             # Ensure upload directory exists and has proper permissions
             if [ ! -d "${{ vars.UPLOADS_DIR_PROD }}" ]; then
-              sudo mkdir -p "${{ vars.UPLOADS_DIR_PROD }}"
-              sudo chown -R $USER:$USER "${{ vars.UPLOADS_DIR_PROD }}"
+              mkdir -p "${{ vars.UPLOADS_DIR_PROD }}"
+              chown -R $USER:$USER "${{ vars.UPLOADS_DIR_PROD }}"
             fi
 
             docker load -i /tmp/icomphub-api.tar
