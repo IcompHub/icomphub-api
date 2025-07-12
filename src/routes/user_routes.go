@@ -9,12 +9,13 @@ import (
 
 func RegisterUserRoutes(rg *gin.RouterGroup, userController *controllers.UserController) {
 	userRoute := rg.Group("/users")
-	userRoute.GET("/", middlewares.AuthMiddleware(), middlewares.RoleMiddleware("admin"), userController.GetAll)
+	userRoute.GET("/", userController.GetAll)
 	userRoute.GET("/:id", userController.Find)
 	userRoute.POST("/", userController.Create)
-	userRoute.PUT("/:id", userController.Update)
-	userRoute.DELETE("/:id", userController.Delete)
-	userRoute.POST("/profile-picture", userController.UpdateProfilePicture)
-	userRoute.DELETE("/profile-picture", userController.DeleteProfilePicture)
-	userRoute.GET("/profile-picture", userController.GetProfilePicture)
+	userRoute.PUT("/:id", middlewares.AuthMiddleware(), userController.Update)
+	userRoute.DELETE("/:id", middlewares.AuthMiddleware(), middlewares.RoleMiddleware("admin"), userController.Delete)
+	userRoute.POST("/profile-picture", middlewares.AuthMiddleware(), userController.UpdateProfilePicture)
+	userRoute.DELETE("/profile-picture", middlewares.AuthMiddleware(), userController.DeleteProfilePicture)
+	userRoute.GET("/profile-picture", middlewares.AuthMiddleware(), userController.GetProfilePicture)
+	userRoute.GET("/profile-picture/:id", userController.GetProfilePictureById)
 }
