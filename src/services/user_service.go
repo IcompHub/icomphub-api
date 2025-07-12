@@ -200,6 +200,15 @@ func (service *userService) UpdateProfilePicture(id uint64, image *multipart.Fil
 		return nil, code, err
 	}
 
+	if user.ProfilePictureId != nil {
+		_, code, err = service.DeleteProfilePicture(id)
+		if err != nil {
+			return nil, code, err
+		}
+
+		user.ProfilePictureId = nil
+	}
+
 	user.ProfilePictureId = &path
 
 	err = service.validateUser(user, false)
