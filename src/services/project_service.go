@@ -3,10 +3,12 @@ package services
 import (
 	"encoding/json"
 	"errors"
+	"mime/multipart"
 	"strings"
 
 	"icomphub-api/codes"
 	"icomphub-api/dtos"
+	"icomphub-api/files"
 	"icomphub-api/mappers"
 	"icomphub-api/models"
 	"icomphub-api/repositories"
@@ -21,14 +23,18 @@ type ProjectService interface {
 	Create(createDTO *dtos.ProjectCreateRequestDTO) (*dtos.ProjectDTO, codes.Code, error)
 	Delete(id uint64) (codes.Code, error)
 	Update(id uint64, updateDTO *dtos.ProjectUpdateRequestDTO) (*dtos.ProjectDTO, codes.Code, error)
+	UpdateThumbnail(id uint64, image *multipart.FileHeader) (*dtos.ProjectDTO, codes.Code, error)
+	DeleteThumbnail(id uint64) (*dtos.ProjectDTO, codes.Code, error)
+	GetThumbnailFullPath(id uint64) (string, codes.Code, error)
 }
 
 type projectService struct {
-	repository repositories.ProjectRepository
+	repository  repositories.ProjectRepository
+	fileService files.FileUploadService
 }
 
-func NewProjectService(repo repositories.ProjectRepository) ProjectService {
-	return &projectService{repository: repo}
+func NewProjectService(repo repositories.ProjectRepository, fileService files.FileUploadService) ProjectService {
+	return &projectService{repository: repo, fileService: fileService}
 }
 
 func (service *projectService) find(id uint64) (*models.Project, codes.Code, error) {
@@ -169,4 +175,114 @@ func (service *projectService) Update(id uint64, updateDTO *dtos.ProjectUpdateRe
 	}
 
 	return mapper, codes.UpdateProject, nil
+}
+
+func (service *projectService) UpdateThumbnail(id uint64, image *multipart.FileHeader) (*dtos.ProjectDTO, codes.Code, error) {
+	project, code, err := service.find(id)
+	if err != nil {
+		return nil, code, err
+	}
+
+	path, code, err := service.fileService.SaveFile(image, files.UploadConfig{
+		TargetFolder: "projects",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
+	}
+
+	if project.ThumbnailID != nil {
+		_, code, err = service.DeleteThumbnail(id)
+		if err != nil {
+			return nil, code, err
+		}
+
+		project.ThumbnailID = nil
+	}
+
+	project.ThumbnailID = &path
+
+	err = service.validateProject(project)
+	if err != nil {
+		return nil, codes.InvalidParams, err
+	}
+
+	err = service.repository.Update(project)
+	if err != nil {
+		return nil, codes.ErrorUpdatingProject, err
+	}
+
+	projectDTO, err := mappers.ProjectToDTO(project)
+	if err != nil {
+		return nil, codes.ErrorUpdatingProject, err
+	}
+
+	return projectDTO, codes.UpdateProject, nil
+}
+
+func (service *projectService) DeleteThumbnail(id uint64) (*dtos.ProjectDTO, codes.Code, error) {
+	project, code, err := service.find(id)
+	if err != nil {
+		return nil, code, err
+	}
+
+	if project.ThumbnailID == nil {
+		projectDTO, err := mappers.ProjectToDTO(project)
+		if err != nil {
+			return nil, codes.ErrorUpdatingProject, err
+		}
+
+		return projectDTO, codes.UpdateProject, nil
+	}
+
+	code, err = service.fileService.DeleteFile(*project.ThumbnailID, files.UploadConfig{
+		TargetFolder: "projects",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
+	}
+
+	project.ThumbnailID = nil
+
+	err = service.validateProject(project)
+	if err != nil {
+		return nil, codes.InvalidParams, err
+	}
+
+	err = service.repository.Update(project)
+	if err != nil {
+		return nil, codes.ErrorUpdatingProject, err
+	}
+
+	projectDTO, err := mappers.ProjectToDTO(project)
+	if err != nil {
+		return nil, codes.ErrorUpdatingProject, err
+	}
+
+	return projectDTO, codes.UpdateProject, nil
+}
+
+func (service *projectService) GetThumbnailFullPath(id uint64) (string, codes.Code, error) {
+	project, code, err := service.find(id)
+	if err != nil {
+		return "", code, err
+	}
+
+	if project.ThumbnailID == nil {
+		return "", codes.FileNotFound, errors.New("no profile picture registered")
+	}
+
+	fullPath, code, err := service.fileService.GetFile(*project.ThumbnailID, files.UploadConfig{
+		TargetFolder: "projects",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return "", code, err
+	}
+
+	return fullPath, codes.FileFound, nil
 }
