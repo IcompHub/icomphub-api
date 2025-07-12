@@ -32,7 +32,11 @@ func (s *LocalFileUploadService) SaveFile(fileHeader *multipart.FileHeader, conf
 	if err != nil {
 		return "", codes.FileCouldNotOpen, err
 	}
-	defer src.Close()
+	defer func() {
+		if cerr := src.Close(); cerr != nil {
+			fmt.Fprintf(os.Stderr, "error closing src file: %v\n", cerr)
+		}
+	}()
 
 	// Get extension from original filename (optional)
 	ext := filepath.Ext(fileHeader.Filename)
@@ -63,7 +67,11 @@ func (s *LocalFileUploadService) SaveFile(fileHeader *multipart.FileHeader, conf
 	if err != nil {
 		return "", codes.FileCouldNotSave, err
 	}
-	defer dst.Close()
+	defer func() {
+		if cerr := dst.Close(); cerr != nil {
+			fmt.Fprintf(os.Stderr, "error closing dst file: %v\n", cerr)
+		}
+	}()
 
 	_, err = io.Copy(dst, src)
 	if err != nil {
