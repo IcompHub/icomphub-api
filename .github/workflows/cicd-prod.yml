@@ -71,6 +71,14 @@ jobs:
       - name: Run Docker Image on VPS
         run: |
           ssh ${{ secrets.SERVER01_USER }}@${{ secrets.SERVER01_HOST }} << 'EOF'
+            set -e
+
+            # Ensure upload directory exists and has proper permissions
+            if [ ! -d "${{ vars.UPLOADS_DIR_PROD }}" ]; then
+              sudo mkdir -p "${{ vars.UPLOADS_DIR_PROD }}"
+              sudo chown -R $USER:$USER "${{ vars.UPLOADS_DIR_PROD }}"
+            fi
+
             docker load -i /tmp/icomphub-api.tar
             docker stop icomphub-api || true
             docker rm icomphub-api || true
@@ -86,5 +94,6 @@ jobs:
               -e DB_PASSWORD=${{ secrets.DB_PW_PROD }} \
               -e DB_NAME=${{ vars.DB_PROD }} \
               -e JWT_SECRET=${{ secrets.JWT_SECRET_PROD }} \
+              -v "${{ vars.UPLOADS_DIR_PROD }}":/app/static/uploads \
               icomphub-api:latest
           EOF
