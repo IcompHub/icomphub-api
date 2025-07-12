@@ -2,6 +2,7 @@ package routes
 
 import (
 	"icomphub-api/controllers"
+	"icomphub-api/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,4 +14,7 @@ func RegisterProjectRoutes(rg *gin.RouterGroup, projectController *controllers.P
 	projectRoute.POST("/", projectController.Create)
 	projectRoute.PUT("/:id", projectController.Update)
 	projectRoute.DELETE("/:id", projectController.Delete)
+	projectRoute.POST("/thumbnail/:id", middlewares.AuthMiddleware(), projectController.UpdateThumbnail)
+	projectRoute.DELETE("/thumbnail/:id", middlewares.AuthMiddleware(), projectController.DeleteThumbnail)
+	projectRoute.GET("/thumbnail/:id", projectController.GetThumbnail)
 }
