@@ -15,4 +15,6 @@ func RegisterUserRoutes(rg *gin.RouterGroup, userController *controllers.UserCon
 	userRoute.PUT("/:id", userController.Update)
 	userRoute.DELETE("/:id", userController.Delete)
 	userRoute.POST("/profile-picture", userController.UpdateProfilePicture)
+	userRoute.DELETE("/profile-picture", userController.DeleteProfilePicture)
+	userRoute.GET("/profile-picture", userController.GetProfilePicture)
 }
