@@ -82,8 +82,10 @@ func main() {
 	classGroupService := services.NewClassGroupService(classGroupRepository)
 	classGroupController := controllers.NewClassGroupController(classGroupService)
 
+	projectImageRepository := repositories.NewProjectImageRepository(dbConnection)
+
 	projectRepository := repositories.NewProjectRepository(dbConnection)
-	projectService := services.NewProjectService(projectRepository, uploadService)
+	projectService := services.NewProjectService(projectRepository, uploadService, projectImageRepository)
 	projectController := controllers.NewProjectController(projectService)
 
 	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController, authController)

@@ -26,15 +26,20 @@ type ProjectService interface {
 	UpdateThumbnail(id uint64, image *multipart.FileHeader) (*dtos.ProjectDTO, codes.Code, error)
 	DeleteThumbnail(id uint64) (*dtos.ProjectDTO, codes.Code, error)
 	GetThumbnailFullPath(id uint64) (string, codes.Code, error)
+	CreateImage(id uint64, image *multipart.FileHeader) (*dtos.ProjectImageDTO, codes.Code, error)
+	UpdateImage(imageID uint64, image *multipart.FileHeader) (*dtos.ProjectImageDTO, codes.Code, error)
+	DeleteImage(imageID uint64) (codes.Code, error)
+	GetImageFullPath(imageID uint64) (string, codes.Code, error)
 }
 
 type projectService struct {
-	repository  repositories.ProjectRepository
-	fileService files.FileUploadService
+	repository      repositories.ProjectRepository
+	fileService     files.FileUploadService
+	imageRepository repositories.ProjectImageRepository
 }
 
-func NewProjectService(repo repositories.ProjectRepository, fileService files.FileUploadService) ProjectService {
-	return &projectService{repository: repo, fileService: fileService}
+func NewProjectService(repo repositories.ProjectRepository, fileService files.FileUploadService, imageRepository repositories.ProjectImageRepository) ProjectService {
+	return &projectService{repository: repo, fileService: fileService, imageRepository: imageRepository}
 }
 
 func (service *projectService) find(id uint64) (*models.Project, codes.Code, error) {
@@ -276,6 +281,107 @@ func (service *projectService) GetThumbnailFullPath(id uint64) (string, codes.Co
 	}
 
 	fullPath, code, err := service.fileService.GetFile(*project.ThumbnailID, files.UploadConfig{
+		TargetFolder: "projects",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return "", code, err
+	}
+
+	return fullPath, codes.FileFound, nil
+}
+
+func (service *projectService) CreateImage(id uint64, image *multipart.FileHeader) (*dtos.ProjectImageDTO, codes.Code, error) {
+	project, code, err := service.find(id)
+	if err != nil {
+		return nil, code, err
+	}
+
+	filename, code, err := service.fileService.SaveFile(image, files.UploadConfig{
+		TargetFolder: "projects",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
+	}
+
+	projectImage := &models.ProjectImage{
+		ProjectID: project.ID,
+		ImageID:   filename,
+	}
+
+	err = service.imageRepository.Create(projectImage)
+	if err != nil {
+		return nil, codes.ErrorFindingProject, err
+	}
+
+	return mappers.ProjectImageToDTO(projectImage), codes.CreateProject, nil
+}
+
+func (service *projectService) UpdateImage(imageID uint64, image *multipart.FileHeader) (*dtos.ProjectImageDTO, codes.Code, error) {
+	projectImage, err := service.imageRepository.Find(imageID)
+	if err != nil {
+		return nil, codes.FileNotFound, err
+	}
+
+	code, err := service.fileService.DeleteFile(projectImage.ImageID, files.UploadConfig{
+		TargetFolder: "projects",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
+	}
+
+	projectImage.ImageID, code, err = service.fileService.SaveFile(image, files.UploadConfig{
+		TargetFolder: "projects",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
+	}
+
+	err = service.imageRepository.Update(projectImage)
+	if err != nil {
+		return nil, codes.ErrorFindingProject, err
+	}
+
+	return mappers.ProjectImageToDTO(projectImage), codes.CreateProject, nil
+}
+
+func (service *projectService) DeleteImage(imageID uint64) (codes.Code, error) {
+	projectImage, err := service.imageRepository.Find(imageID)
+	if err != nil {
+		return codes.FileNotFound, err
+	}
+
+	err = service.imageRepository.Delete(projectImage)
+	if err != nil {
+		return codes.UnknowError, err
+	}
+
+	code, err := service.fileService.DeleteFile(projectImage.ImageID, files.UploadConfig{
+		TargetFolder: "projects",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return code, err
+	}
+
+	return codes.DeleteProject, nil
+}
+
+func (service *projectService) GetImageFullPath(imageID uint64) (string, codes.Code, error) {
+	projectImage, err := service.imageRepository.Find(imageID)
+	if err != nil {
+		return "", codes.FileNotFound, err
+	}
+
+	fullPath, code, err := service.fileService.GetFile(projectImage.ImageID, files.UploadConfig{
 		TargetFolder: "projects",
 		AllowedTypes: []string{"image/jpeg", "image/png"},
 		MaxSizeMB:    5,

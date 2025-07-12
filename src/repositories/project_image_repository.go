@@ -38,7 +38,7 @@ func (repository *projectImageRepository) GetAll(req *dtos.ProjectImageRequestDT
 
 	query = query.Offset(int(offset)).Limit(int(req.PageSize))
 
-	err := query.Preload("Technologies").Find(&projectImages).Error
+	err := query.Find(&projectImages).Error
 	return projectImages, err
 }
 
@@ -53,7 +53,7 @@ func (repository *projectImageRepository) CountAll(req *dtos.ProjectImageRequest
 
 func (repository *projectImageRepository) Find(id uint64) (*models.ProjectImage, error) {
 	var projectImage *models.ProjectImage
-	err := repository.db.Model(&models.ProjectImage{}).Preload("Technologies").First(&projectImage, id).Error
+	err := repository.db.Model(&models.ProjectImage{}).First(&projectImage, id).Error
 
 	return projectImage, err
 }
