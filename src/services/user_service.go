@@ -22,6 +22,8 @@ type UserService interface {
 	Delete(id uint64) (codes.Code, error)
 	Update(id uint64, updateDTO *dtos.UserUpdateRequestDTO) (*dtos.UserDTO, codes.Code, error)
 	UpdateProfilePicture(id uint64, image *multipart.FileHeader) (*dtos.UserDTO, codes.Code, error)
+	DeleteProfilePicture(id uint64) (*dtos.UserDTO, codes.Code, error)
+	GetProfilePictureFullPath(id uint64) (string, codes.Code, error)
 }
 
 type userService struct {
@@ -211,4 +213,60 @@ func (service *userService) UpdateProfilePicture(id uint64, image *multipart.Fil
 	}
 
 	return mappers.UserToDTO(user), codes.UpdateUser, nil
+}
+
+func (service *userService) DeleteProfilePicture(id uint64) (*dtos.UserDTO, codes.Code, error) {
+	user, code, err := service.find(id)
+	if err != nil {
+		return nil, code, err
+	}
+
+	if user.ProfilePictureId == nil {
+		return mappers.UserToDTO(user), codes.UpdateUser, nil
+	}
+
+	code, err = service.fileService.DeleteFile(*user.ProfilePictureId, files.UploadConfig{
+		TargetFolder: "users",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
+	}
+
+	user.ProfilePictureId = nil
+
+	err = service.validateUser(user, false)
+	if err != nil {
+		return nil, codes.InvalidParams, err
+	}
+
+	err = service.repository.Update(user)
+	if err != nil {
+		return mappers.UserToDTO(user), codes.ErrorUpdatingUser, err
+	}
+
+	return mappers.UserToDTO(user), codes.UpdateUser, nil
+}
+
+func (service *userService) GetProfilePictureFullPath(id uint64) (string, codes.Code, error) {
+	user, code, err := service.find(id)
+	if err != nil {
+		return "", code, err
+	}
+
+	if user.ProfilePictureId == nil {
+		return "", codes.FileNotFound, errors.New("no profile picture registered")
+	}
+
+	fullPath, code, err := service.fileService.GetFile(*user.ProfilePictureId, files.UploadConfig{
+		TargetFolder: "users",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return "", code, err
+	}
+
+	return fullPath, codes.FileFound, nil
 }

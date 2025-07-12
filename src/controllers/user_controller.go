@@ -186,7 +186,7 @@ func (controller *UserController) Delete(context *gin.Context) {
 // @Security BearerAuth
 // @Accept multipart/form-data
 // @Produce json
-// @Param image formData file true "User profile picture image"
+// @Param image formData file false "User profile picture image"
 // @Success 200 {object} map[string]string
 // @Failure 400 {object} map[string]string
 // @Router /users/profile-picture [post]
@@ -203,6 +203,58 @@ func (controller *UserController) UpdateProfilePicture(context *gin.Context) {
 	}
 
 	user, code, err := controller.service.UpdateProfilePicture(userID, image)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
 
-	handlers.Ok(context, codes.UpdateUser, "user upadated with success", user)
+	handlers.Ok(context, codes.UpdateUser, "user profile picture upadated with success", user)
+}
+
+// @Summary      Delete user profile picture
+// @Tags         users
+// @Security BearerAuth
+// @Accept multipart/form-data
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router /users/profile-picture [delete]
+func (controller *UserController) DeleteProfilePicture(context *gin.Context) {
+	userID, code, err := auth.GetUserIDFromToken(context)
+	if err != nil {
+		handlers.Unauthorized(context, code, err)
+		return
+	}
+
+	user, code, err := controller.service.DeleteProfilePicture(userID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, codes.UpdateUser, "user profile picture deleted with success", user)
+}
+
+// @Summary      Get user profile picture
+// @Tags         users
+// @Security BearerAuth
+// @Accept multipart/form-data
+// @Produce json
+// @Success      200 {file} file
+// @Failure 400 {object} map[string]string
+// @Router /users/profile-picture [get]
+func (controller *UserController) GetProfilePicture(context *gin.Context) {
+	userID, code, err := auth.GetUserIDFromToken(context)
+	if err != nil {
+		handlers.Unauthorized(context, code, err)
+		return
+	}
+
+	fullPath, code, err := controller.service.GetProfilePictureFullPath(userID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	context.File(fullPath)
 }

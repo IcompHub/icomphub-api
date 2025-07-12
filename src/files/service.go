@@ -14,4 +14,6 @@ type UploadConfig struct {
 
 type FileUploadService interface {
 	SaveFile(fileHeader *multipart.FileHeader, config UploadConfig) (string, codes.Code, error)
+	DeleteFile(fileName string, config UploadConfig) (codes.Code, error)
+	GetFile(fileName string, config UploadConfig) (string, codes.Code, error)
 }
