@@ -167,3 +167,82 @@ func (controller *ProjectController) Delete(ctx *gin.Context) {
 
 	handlers.Ok(ctx, codes.DeleteProject, "project deleted with success", nil)
 }
+
+// @Summary      Update  project thumbnail
+// @Tags         projects
+// @Security BearerAuth
+// @Accept multipart/form-data
+// @Produce json
+// @Param        id   path  uint64  true "Project ID"
+// @Param image formData file false "Project thumbnail image"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router       /projects/thumbnail/{id} [post]
+func (controller *ProjectController) UpdateThumbnail(context *gin.Context) {
+	projectID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	image, err := context.FormFile("image")
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+	}
+
+	project, code, err := controller.service.UpdateThumbnail(projectID, image)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, code, "project thumbnail with success", project)
+}
+
+// @Summary      Delete project thumbnail
+// @Tags         projects
+// @Security BearerAuth
+// @Param        id   path  uint64  true "Project ID"
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Router       /projects/thumbnail/{id} [delete]
+func (controller *ProjectController) DeleteThumbnail(context *gin.Context) {
+	projectID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	project, code, err := controller.service.DeleteThumbnail(projectID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	handlers.Ok(context, code, "project thumbnail deleted with success", project)
+}
+
+// @Summary      Get project thumbnail by ID
+// @Tags         projects
+// @Security BearerAuth
+// @Param        id   path  uint64  true "Project ID"
+// @Produce json
+// @Success      200 {file} file
+// @Failure 400 {object} map[string]string
+// @Router       /projects/thumbnail/{id} [get]
+func (controller *ProjectController) GetThumbnail(context *gin.Context) {
+	projectID, err := handlers.ValidateId(context)
+	if err != nil {
+		handlers.BadRequest(context, codes.InvalidParams, err)
+		return
+	}
+
+	fullPath, code, err := controller.service.GetThumbnailFullPath(projectID)
+	if err != nil {
+		handlers.BadRequest(context, code, err)
+		return
+	}
+
+	context.File(fullPath)
+}
