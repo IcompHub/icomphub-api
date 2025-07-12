@@ -191,15 +191,6 @@ func (service *userService) UpdateProfilePicture(id uint64, image *multipart.Fil
 		return nil, code, err
 	}
 
-	path, code, err := service.fileService.SaveFile(image, files.UploadConfig{
-		TargetFolder: "users",
-		AllowedTypes: []string{"image/jpeg", "image/png"},
-		MaxSizeMB:    5,
-	})
-	if err != nil {
-		return nil, code, err
-	}
-
 	if user.ProfilePictureId != nil {
 		_, code, err = service.DeleteProfilePicture(id)
 		if err != nil {
@@ -207,6 +198,15 @@ func (service *userService) UpdateProfilePicture(id uint64, image *multipart.Fil
 		}
 
 		user.ProfilePictureId = nil
+	}
+
+	path, code, err := service.fileService.SaveFile(image, files.UploadConfig{
+		TargetFolder: "users",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
 	}
 
 	user.ProfilePictureId = &path

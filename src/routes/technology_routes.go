@@ -2,6 +2,7 @@ package routes
 
 import (
 	"icomphub-api/controllers"
+	"icomphub-api/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,4 +14,7 @@ func RegisterTechnologyRoutes(rg *gin.RouterGroup, technologyController *control
 	technologyRoute.POST("/", technologyController.Create)
 	technologyRoute.PUT("/:id", technologyController.Update)
 	technologyRoute.DELETE("/:id", technologyController.Delete)
+	technologyRoute.PUT("/image/:id", middlewares.AuthMiddleware(), technologyController.UpdateImage)
+	technologyRoute.DELETE("/image/:id", middlewares.AuthMiddleware(), technologyController.DeleteImage)
+	technologyRoute.GET("/image/:id", technologyController.GetImage)
 }

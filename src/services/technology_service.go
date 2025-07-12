@@ -2,10 +2,12 @@ package services
 
 import (
 	"errors"
+	"mime/multipart"
 	"strings"
 
 	"icomphub-api/codes"
 	"icomphub-api/dtos"
+	"icomphub-api/files"
 	"icomphub-api/mappers"
 	"icomphub-api/models"
 	"icomphub-api/repositories"
@@ -18,14 +20,18 @@ type TechnologyService interface {
 	Create(createDTO *dtos.TechnologyCreateRequestDTO) (*dtos.TechnologyDTO, codes.Code, error)
 	Delete(id uint64) (codes.Code, error)
 	Update(id uint64, updateDTO *dtos.TechnologyUpdateRequestDTO) (*dtos.TechnologyDTO, codes.Code, error)
+	UpdateImage(id uint64, image *multipart.FileHeader) (*dtos.TechnologyDTO, codes.Code, error)
+	DeleteImage(id uint64) (codes.Code, error)
+	GetImageFullPath(id uint64) (string, codes.Code, error)
 }
 
 type technologyService struct {
-	repository repositories.TechnologyRepository
+	repository  repositories.TechnologyRepository
+	fileService files.FileUploadService
 }
 
-func NewTechnologyService(repository repositories.TechnologyRepository) TechnologyService {
-	return &technologyService{repository: repository}
+func NewTechnologyService(repository repositories.TechnologyRepository, fileService files.FileUploadService) TechnologyService {
+	return &technologyService{repository: repository, fileService: fileService}
 }
 
 func (service *technologyService) find(id uint64) (*models.Technology, codes.Code, error) {
@@ -134,4 +140,89 @@ func (service *technologyService) Update(id uint64, updateDTO *dtos.TechnologyUp
 	}
 
 	return mappers.TechnologyToDTO(technology), codes.UpdateTechnology, nil
+}
+
+func (service *technologyService) UpdateImage(id uint64, image *multipart.FileHeader) (*dtos.TechnologyDTO, codes.Code, error) {
+	technology, code, err := service.find(id)
+	if err != nil {
+		return nil, code, err
+	}
+
+	if technology.ImageID != nil {
+		code, err := service.fileService.DeleteFile(*technology.ImageID, files.UploadConfig{
+			TargetFolder: "technologies",
+			AllowedTypes: []string{"image/jpeg", "image/png"},
+			MaxSizeMB:    5,
+		})
+		if err != nil {
+			return nil, code, err
+		}
+	}
+
+	filename, code, err := service.fileService.SaveFile(image, files.UploadConfig{
+		TargetFolder: "technologies",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return nil, code, err
+	}
+
+	technology.ImageID = &filename
+
+	err = service.repository.Update(technology)
+	if err != nil {
+		return nil, codes.ErrorFindingTechnology, err
+	}
+
+	return mappers.TechnologyToDTO(technology), codes.CreateTechnology, nil
+}
+
+func (service *technologyService) DeleteImage(id uint64) (codes.Code, error) {
+	technology, code, err := service.find(id)
+	if err != nil {
+		return code, err
+	}
+
+	if technology.ImageID != nil {
+		code, err := service.fileService.DeleteFile(*technology.ImageID, files.UploadConfig{
+			TargetFolder: "technologies",
+			AllowedTypes: []string{"image/jpeg", "image/png"},
+			MaxSizeMB:    5,
+		})
+		if err != nil {
+			return code, err
+		}
+
+		technology.ImageID = nil
+
+		err = service.repository.Update(technology)
+		if err != nil {
+			return codes.ErrorFindingTechnology, err
+		}
+	}
+
+	return codes.DeleteTechnology, nil
+}
+
+func (service *technologyService) GetImageFullPath(id uint64) (string, codes.Code, error) {
+	technology, code, err := service.find(id)
+	if err != nil {
+		return "", code, err
+	}
+
+	if technology.ImageID == nil {
+		return "", codes.FileNotFound, err
+	}
+
+	fullPath, code, err := service.fileService.GetFile(*technology.ImageID, files.UploadConfig{
+		TargetFolder: "technologies",
+		AllowedTypes: []string{"image/jpeg", "image/png"},
+		MaxSizeMB:    5,
+	})
+	if err != nil {
+		return "", code, err
+	}
+
+	return fullPath, codes.FileFound, nil
 }
