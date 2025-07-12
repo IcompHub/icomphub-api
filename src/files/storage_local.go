@@ -72,3 +72,42 @@ func (s *LocalFileUploadService) SaveFile(fileHeader *multipart.FileHeader, conf
 
 	return filename, codes.FileSaved, nil // relative path for DB
 }
+
+func (s *LocalFileUploadService) DeleteFile(fileName string, config UploadConfig) (codes.Code, error) {
+	// Prevent accidental deletes outside allowed scope
+	if fileName == "" {
+		return codes.InvalidParams, fmt.Errorf("file name cannot be empty")
+	}
+
+	// Construct the full absolute path
+	absPath := filepath.Join(s.BasePath, config.TargetFolder, fileName)
+
+	// Check if file exists before attempting to delete
+	if _, err := os.Stat(absPath); os.IsNotExist(err) {
+		return codes.FileNotFound, fmt.Errorf("file not found: %s", absPath)
+	}
+
+	// Attempt to delete the file
+	err := os.Remove(absPath)
+	if err != nil {
+		return codes.FileCouldNotDelete, fmt.Errorf("failed to delete file: %w", err)
+	}
+
+	return codes.FileDeleted, nil
+}
+
+func (s *LocalFileUploadService) GetFile(fileName string, config UploadConfig) (string, codes.Code, error) {
+	if fileName == "" {
+		return "", codes.InvalidParams, fmt.Errorf("file name is required")
+	}
+
+	relPath := filepath.Join(config.TargetFolder, fileName)
+	absPath := filepath.Join(s.BasePath, relPath)
+
+	// Check if file exists
+	if _, err := os.Stat(absPath); os.IsNotExist(err) {
+		return "", codes.FileNotFound, fmt.Errorf("file not found: %s", fileName)
+	}
+
+	return absPath, codes.FileFound, nil
+}

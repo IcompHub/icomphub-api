@@ -734,6 +734,40 @@ const docTemplate = `{
             }
         },
         "/users/profile-picture": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user profile picture",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -755,10 +789,46 @@ const docTemplate = `{
                         "type": "file",
                         "description": "User profile picture image",
                         "name": "image",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete user profile picture",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -958,7 +1028,11 @@ const docTemplate = `{
                 "file_could_not_open",
                 "file_could_not_find_target_dir",
                 "file_could_not_save",
-                "file_saved"
+                "file_saved",
+                "file_deleted",
+                "file_found",
+                "file_not_found",
+                "file_could_not_delete"
             ],
             "x-enum-varnames": [
                 "UnknowError",
@@ -1023,7 +1097,11 @@ const docTemplate = `{
                 "FileCouldNotOpen",
                 "FileCouldNotFindTargetDir",
                 "FileCouldNotSave",
-                "FileSaved"
+                "FileSaved",
+                "FileDeleted",
+                "FileFound",
+                "FileNotFound",
+                "FileCouldNotDelete"
             ]
         },
         "dtos.ClassGroupCreateRequestDTO": {

@@ -80,4 +80,8 @@ const (
 	FileCouldNotFindTargetDir Code = "file_could_not_find_target_dir"
 	FileCouldNotSave          Code = "file_could_not_save"
 	FileSaved                 Code = "file_saved"
+	FileDeleted               Code = "file_deleted"
+	FileFound                 Code = "file_found"
+	FileNotFound              Code = "file_not_found"
+	FileCouldNotDelete        Code = "file_could_not_delete"
 )
