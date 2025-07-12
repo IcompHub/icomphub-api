@@ -75,7 +75,7 @@ func main() {
 	authController := controllers.NewAuthController(authService)
 
 	technologyRepository := repositories.NewTechnologyRepository(dbConnection)
-	technologyService := services.NewTechnologyService(technologyRepository)
+	technologyService := services.NewTechnologyService(technologyRepository, uploadService)
 	technologyController := controllers.NewTechnologyController(technologyService)
 
 	classGroupRepository := repositories.NewClassGroupRepository(dbConnection)
