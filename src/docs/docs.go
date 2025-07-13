@@ -250,6 +250,155 @@ const docTemplate = `{
                 }
             }
         },
+        "/members": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Create a member",
+                "parameters": [
+                    {
+                        "description": "MemberCreateRequestDTO",
+                        "name": "MemberCreateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.MemberCreateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_MemberDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/members/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Find a member",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Member ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_MemberDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Update a member",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Member ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "MemberUpdateRequestDTO",
+                        "name": "MemberUpdateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.MemberUpdateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_MemberDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "members"
+                ],
+                "summary": "Delete a member",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Member ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
         "/projects": {
             "get": {
                 "produces": [
@@ -751,6 +900,155 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Project ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Create a role",
+                "parameters": [
+                    {
+                        "description": "RoleCreateRequestDTO",
+                        "name": "RoleCreateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.RoleCreateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_RoleDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Find a role",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Role ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_RoleDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Update a role",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Role ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "RoleUpdateRequestDTO",
+                        "name": "RoleUpdateRequestDTO",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.RoleUpdateRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-dtos_RoleDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/icomphub-api_dtos.Response-any"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Delete a role",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Role ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1531,7 +1829,31 @@ const docTemplate = `{
                 "file_deleted",
                 "file_found",
                 "file_not_found",
-                "file_could_not_delete"
+                "file_could_not_delete",
+                "get_all_members",
+                "count_all_members",
+                "find_member",
+                "create_member",
+                "update_member",
+                "delete_member",
+                "error_getting_members",
+                "error_counting_members",
+                "error_finding_member",
+                "error_creating_member",
+                "error_updating_member",
+                "error_deleting_member",
+                "get_all_roles",
+                "count_all_roles",
+                "find_role",
+                "create_role",
+                "update_role",
+                "delete_role",
+                "error_getting_roles",
+                "error_counting_roles",
+                "error_finding_role",
+                "error_creating_role",
+                "error_updating_role",
+                "error_deleting_role"
             ],
             "x-enum-varnames": [
                 "UnknowError",
@@ -1600,7 +1922,31 @@ const docTemplate = `{
                 "FileDeleted",
                 "FileFound",
                 "FileNotFound",
-                "FileCouldNotDelete"
+                "FileCouldNotDelete",
+                "GetAllMembers",
+                "CountAllMembers",
+                "FindMember",
+                "CreateMember",
+                "UpdateMember",
+                "DeleteMember",
+                "ErrorGettingAllMembers",
+                "ErrorCountingAllMembers",
+                "ErrorFindingMember",
+                "ErrorCreatingMember",
+                "ErrorUpdatingMember",
+                "ErrorDeletingMember",
+                "GetAllRoles",
+                "CountAllRoles",
+                "FindRole",
+                "CreateRole",
+                "UpdateRole",
+                "DeleteRole",
+                "ErrorGettingAllRoles",
+                "ErrorCountingAllRoles",
+                "ErrorFindingRole",
+                "ErrorCreatingRole",
+                "ErrorUpdatingRole",
+                "ErrorDeletingRole"
             ]
         },
         "dtos.ClassGroupCreateRequestDTO": {
@@ -1691,6 +2037,38 @@ const docTemplate = `{
                 }
             }
         },
+        "dtos.MemberDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "project": {
+                    "$ref": "#/definitions/dtos.ProjectShortDTO"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.RoleDTO"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/dtos.UserDTO"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "dtos.MemberShortDTO": {
             "type": "object",
             "properties": {
@@ -1708,6 +2086,29 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "dtos.MemberUpdateRequestDTO": {
+            "type": "object",
+            "required": [
+                "roles"
+            ],
+            "properties": {
+                "nickname": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.RoleCreateRequestDTO"
+                    }
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -1811,6 +2212,29 @@ const docTemplate = `{
                 }
             }
         },
+        "dtos.ProjectShortDTO": {
+            "type": "object",
+            "properties": {
+                "class_group_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "thumbnail_id": {
+                    "type": "string"
+                }
+            }
+        },
         "dtos.ProjectUpdateRequestDTO": {
             "type": "object",
             "properties": {
@@ -1859,6 +2283,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.RoleUpdateRequestDTO": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
                     "type": "string"
                 }
             }
@@ -2157,6 +2592,29 @@ const docTemplate = `{
                 }
             }
         },
+        "icomphub-api_dtos.Response-dtos_MemberDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/dtos.MemberDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
         "icomphub-api_dtos.Response-dtos_ProjectDTO": {
             "type": "object",
             "properties": {
@@ -2170,6 +2628,29 @@ const docTemplate = `{
                 },
                 "data": {
                     "$ref": "#/definitions/dtos.ProjectDTO"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "icomphub-api_dtos.Response-dtos_RoleDTO": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/codes.Code"
+                        }
+                    ],
+                    "example": "USER_CREATED"
+                },
+                "data": {
+                    "$ref": "#/definitions/dtos.RoleDTO"
                 },
                 "message": {
                     "type": "string",

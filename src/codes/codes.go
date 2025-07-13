@@ -84,4 +84,32 @@ const (
 	FileFound                 Code = "file_found"
 	FileNotFound              Code = "file_not_found"
 	FileCouldNotDelete        Code = "file_could_not_delete"
+
+	GetAllMembers   Code = "get_all_members"
+	CountAllMembers Code = "count_all_members"
+	FindMember      Code = "find_member"
+	CreateMember    Code = "create_member"
+	UpdateMember    Code = "update_member"
+	DeleteMember    Code = "delete_member"
+
+	ErrorGettingAllMembers  Code = "error_getting_members"
+	ErrorCountingAllMembers Code = "error_counting_members"
+	ErrorFindingMember      Code = "error_finding_member"
+	ErrorCreatingMember     Code = "error_creating_member"
+	ErrorUpdatingMember     Code = "error_updating_member"
+	ErrorDeletingMember     Code = "error_deleting_member"
+
+	GetAllRoles   Code = "get_all_roles"
+	CountAllRoles Code = "count_all_roles"
+	FindRole      Code = "find_role"
+	CreateRole    Code = "create_role"
+	UpdateRole    Code = "update_role"
+	DeleteRole    Code = "delete_role"
+
+	ErrorGettingAllRoles  Code = "error_getting_roles"
+	ErrorCountingAllRoles Code = "error_counting_roles"
+	ErrorFindingRole      Code = "error_finding_role"
+	ErrorCreatingRole     Code = "error_creating_role"
+	ErrorUpdatingRole     Code = "error_updating_role"
+	ErrorDeletingRole     Code = "error_deleting_role"
 )
