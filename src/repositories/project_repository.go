@@ -49,7 +49,12 @@ func (repository *projectRepository) GetAll(req *dtos.ProjectRequestDTO) ([]mode
 
 	query = query.Offset(int(offset)).Limit(int(req.PageSize))
 
-	err := query.Preload("Technologies").Preload("ProjectImages").Find(&projects).Error
+	err := query.Preload("Technologies").
+		Preload("ClassGroup").
+		Preload("ProjectImages").
+		Preload("Members").
+		Preload("Members.Roles").
+		Find(&projects).Error
 	return projects, err
 }
 
@@ -64,7 +69,12 @@ func (repository *projectRepository) CountAll(req *dtos.ProjectRequestDTO) (uint
 
 func (repository *projectRepository) Find(id uint64) (*models.Project, error) {
 	var project *models.Project
-	err := repository.db.Model(&models.Project{}).Preload("Technologies").Preload("ProjectImages").First(&project, id).Error
+	err := repository.db.Model(&models.Project{}).Preload("Technologies").
+		Preload("ClassGroup").
+		Preload("ProjectImages").
+		Preload("Members").
+		Preload("Members.Roles").
+		First(&project, id).Error
 
 	return project, err
 }

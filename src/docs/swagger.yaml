@@ -170,12 +170,45 @@ definitions:
   dtos.LoginRequestDTO:
     properties:
       email:
+        example: nelson.dev@test.com
         type: string
       password:
+        example: "123456"
         type: string
     required:
     - email
     - password
+    type: object
+  dtos.MemberCreateRequestDTO:
+    properties:
+      nickname:
+        minLength: 2
+        type: string
+      project_id:
+        type: integer
+      roles:
+        items:
+          $ref: '#/definitions/dtos.RoleCreateRequestDTO'
+        type: array
+      user_id:
+        type: integer
+    required:
+    - nickname
+    - project_id
+    - roles
+    type: object
+  dtos.MemberShortDTO:
+    properties:
+      id:
+        type: integer
+      nickname:
+        type: string
+      roles:
+        items:
+          $ref: '#/definitions/dtos.RoleDTO'
+        type: array
+      status:
+        type: string
     type: object
   dtos.ProjectCreateRequestDTO:
     properties:
@@ -184,20 +217,32 @@ definitions:
       data:
         additionalProperties: {}
         type: object
+      members:
+        items:
+          $ref: '#/definitions/dtos.MemberCreateRequestDTO'
+        type: array
       name:
         minLength: 2
         type: string
       slug:
         minLength: 2
         type: string
+      technologies:
+        items:
+          $ref: '#/definitions/dtos.TechnologyCreateRequestDTO'
+        type: array
     required:
     - class_group_id
     - data
+    - members
     - name
     - slug
+    - technologies
     type: object
   dtos.ProjectDTO:
     properties:
+      class_group:
+        $ref: '#/definitions/dtos.ClassGroupDTO'
       class_group_id:
         type: integer
       data:
@@ -209,6 +254,10 @@ definitions:
       image_ids:
         items:
           $ref: '#/definitions/dtos.ProjectImageDTO'
+        type: array
+      members:
+        items:
+          $ref: '#/definitions/dtos.MemberShortDTO'
         type: array
       name:
         type: string
@@ -240,6 +289,29 @@ definitions:
       name:
         type: string
       slug:
+        type: string
+    type: object
+  dtos.RoleCreateRequestDTO:
+    properties:
+      name:
+        minLength: 2
+        type: string
+      slug:
+        minLength: 2
+        type: string
+    required:
+    - name
+    - slug
+    type: object
+  dtos.RoleDTO:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+      status:
         type: string
     type: object
   dtos.TechnologyCreateRequestDTO:

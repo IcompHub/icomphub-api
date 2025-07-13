@@ -1656,9 +1656,57 @@ const docTemplate = `{
             ],
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "nelson.dev@test.com"
                 },
                 "password": {
+                    "type": "string",
+                    "example": "123456"
+                }
+            }
+        },
+        "dtos.MemberCreateRequestDTO": {
+            "type": "object",
+            "required": [
+                "nickname",
+                "project_id",
+                "roles"
+            ],
+            "properties": {
+                "nickname": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.RoleCreateRequestDTO"
+                    }
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dtos.MemberShortDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.RoleDTO"
+                    }
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -1668,8 +1716,10 @@ const docTemplate = `{
             "required": [
                 "class_group_id",
                 "data",
+                "members",
                 "name",
-                "slug"
+                "slug",
+                "technologies"
             ],
             "properties": {
                 "class_group_id": {
@@ -1679,6 +1729,12 @@ const docTemplate = `{
                     "type": "object",
                     "additionalProperties": {}
                 },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.MemberCreateRequestDTO"
+                    }
+                },
                 "name": {
                     "type": "string",
                     "minLength": 2
@@ -1686,12 +1742,21 @@ const docTemplate = `{
                 "slug": {
                     "type": "string",
                     "minLength": 2
+                },
+                "technologies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.TechnologyCreateRequestDTO"
+                    }
                 }
             }
         },
         "dtos.ProjectDTO": {
             "type": "object",
             "properties": {
+                "class_group": {
+                    "$ref": "#/definitions/dtos.ClassGroupDTO"
+                },
                 "class_group_id": {
                     "type": "integer"
                 },
@@ -1707,6 +1772,12 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dtos.ProjectImageDTO"
+                    }
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.MemberShortDTO"
                     }
                 },
                 "name": {
@@ -1754,6 +1825,40 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "dtos.RoleCreateRequestDTO": {
+            "type": "object",
+            "required": [
+                "name",
+                "slug"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 2
+                },
+                "slug": {
+                    "type": "string",
+                    "minLength": 2
+                }
+            }
+        },
+        "dtos.RoleDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }
