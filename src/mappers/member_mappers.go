@@ -20,7 +20,7 @@ func MemberToDTO(Member *models.Member) *dtos.MemberDTO {
 		UserId:    Member.UserId,
 		User:      userDTO,
 		Project:   *ProjectToShortDTO(&Member.Project),
-		Roles:     RoleToDTOs(Member.Roles),
+		Roles:     RolesToDTOs(Member.Roles),
 	}
 }
 
@@ -29,7 +29,7 @@ func MemberToShortDTO(Member *models.Member) *dtos.MemberShortDTO {
 		ID:       Member.ID,
 		Nickname: Member.Nickname,
 		Status:   string(Member.Status),
-		Roles:    RoleToDTOs(Member.Roles),
+		Roles:    RolesToDTOs(Member.Roles),
 	}
 }
 
@@ -41,7 +41,7 @@ func CreateRequestDTOToMember(createDTO *dtos.MemberCreateRequestDTO) *models.Me
 	}
 }
 
-func MemberToDTOs(members []models.Member) []dtos.MemberDTO {
+func MembersToDTOs(members []models.Member) []dtos.MemberDTO {
 	dtosList := make([]dtos.MemberDTO, len(members))
 	for i, member := range members {
 		dtosList[i] = *MemberToDTO(&member)

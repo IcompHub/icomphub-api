@@ -68,6 +68,30 @@ definitions:
     - file_found
     - file_not_found
     - file_could_not_delete
+    - get_all_members
+    - count_all_members
+    - find_member
+    - create_member
+    - update_member
+    - delete_member
+    - error_getting_members
+    - error_counting_members
+    - error_finding_member
+    - error_creating_member
+    - error_updating_member
+    - error_deleting_member
+    - get_all_roles
+    - count_all_roles
+    - find_role
+    - create_role
+    - update_role
+    - delete_role
+    - error_getting_roles
+    - error_counting_roles
+    - error_finding_role
+    - error_creating_role
+    - error_updating_role
+    - error_deleting_role
     type: string
     x-enum-varnames:
     - UnknowError
@@ -137,6 +161,30 @@ definitions:
     - FileFound
     - FileNotFound
     - FileCouldNotDelete
+    - GetAllMembers
+    - CountAllMembers
+    - FindMember
+    - CreateMember
+    - UpdateMember
+    - DeleteMember
+    - ErrorGettingAllMembers
+    - ErrorCountingAllMembers
+    - ErrorFindingMember
+    - ErrorCreatingMember
+    - ErrorUpdatingMember
+    - ErrorDeletingMember
+    - GetAllRoles
+    - CountAllRoles
+    - FindRole
+    - CreateRole
+    - UpdateRole
+    - DeleteRole
+    - ErrorGettingAllRoles
+    - ErrorCountingAllRoles
+    - ErrorFindingRole
+    - ErrorCreatingRole
+    - ErrorUpdatingRole
+    - ErrorDeletingRole
   dtos.ClassGroupCreateRequestDTO:
     properties:
       name:
@@ -197,6 +245,27 @@ definitions:
     - project_id
     - roles
     type: object
+  dtos.MemberDTO:
+    properties:
+      id:
+        type: integer
+      nickname:
+        type: string
+      project:
+        $ref: '#/definitions/dtos.ProjectShortDTO'
+      project_id:
+        type: integer
+      roles:
+        items:
+          $ref: '#/definitions/dtos.RoleDTO'
+        type: array
+      status:
+        type: string
+      user:
+        $ref: '#/definitions/dtos.UserDTO'
+      user_id:
+        type: integer
+    type: object
   dtos.MemberShortDTO:
     properties:
       id:
@@ -209,6 +278,21 @@ definitions:
         type: array
       status:
         type: string
+    type: object
+  dtos.MemberUpdateRequestDTO:
+    properties:
+      nickname:
+        type: string
+      project_id:
+        type: integer
+      roles:
+        items:
+          $ref: '#/definitions/dtos.RoleCreateRequestDTO'
+        type: array
+      user_id:
+        type: integer
+    required:
+    - roles
     type: object
   dtos.ProjectCreateRequestDTO:
     properties:
@@ -279,6 +363,21 @@ definitions:
       image_id:
         type: string
     type: object
+  dtos.ProjectShortDTO:
+    properties:
+      class_group_id:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+      status:
+        type: string
+      thumbnail_id:
+        type: string
+    type: object
   dtos.ProjectUpdateRequestDTO:
     properties:
       class_group_id:
@@ -312,6 +411,13 @@ definitions:
       slug:
         type: string
       status:
+        type: string
+    type: object
+  dtos.RoleUpdateRequestDTO:
+    properties:
+      name:
+        type: string
+      slug:
         type: string
     type: object
   dtos.TechnologyCreateRequestDTO:
@@ -515,6 +621,20 @@ definitions:
       success:
         type: boolean
     type: object
+  icomphub-api_dtos.Response-dtos_MemberDTO:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/codes.Code'
+        example: USER_CREATED
+      data:
+        $ref: '#/definitions/dtos.MemberDTO'
+      message:
+        example: User created successfully
+        type: string
+      success:
+        type: boolean
+    type: object
   icomphub-api_dtos.Response-dtos_ProjectDTO:
     properties:
       code:
@@ -523,6 +643,20 @@ definitions:
         example: USER_CREATED
       data:
         $ref: '#/definitions/dtos.ProjectDTO'
+      message:
+        example: User created successfully
+        type: string
+      success:
+        type: boolean
+    type: object
+  icomphub-api_dtos.Response-dtos_RoleDTO:
+    properties:
+      code:
+        allOf:
+        - $ref: '#/definitions/codes.Code'
+        example: USER_CREATED
+      data:
+        $ref: '#/definitions/dtos.RoleDTO'
       message:
         example: User created successfully
         type: string
@@ -784,6 +918,103 @@ paths:
       summary: Update a class group
       tags:
       - class_groups
+  /members:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: MemberCreateRequestDTO
+        in: body
+        name: MemberCreateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.MemberCreateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_MemberDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Create a member
+      tags:
+      - members
+  /members/{id}:
+    delete:
+      parameters:
+      - description: Member ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Delete a member
+      tags:
+      - members
+    get:
+      parameters:
+      - description: Member ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_MemberDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Find a member
+      tags:
+      - members
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Member ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: MemberUpdateRequestDTO
+        in: body
+        name: MemberUpdateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.MemberUpdateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_MemberDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Update a member
+      tags:
+      - members
   /projects:
     get:
       parameters:
@@ -1118,6 +1349,103 @@ paths:
       summary: Update  project thumbnail
       tags:
       - projects
+  /roles:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: RoleCreateRequestDTO
+        in: body
+        name: RoleCreateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RoleCreateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_RoleDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Create a role
+      tags:
+      - roles
+  /roles/{id}:
+    delete:
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Delete a role
+      tags:
+      - roles
+    get:
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_RoleDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Find a role
+      tags:
+      - roles
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: RoleUpdateRequestDTO
+        in: body
+        name: RoleUpdateRequestDTO
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RoleUpdateRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-dtos_RoleDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/icomphub-api_dtos.Response-any'
+      summary: Update a role
+      tags:
+      - roles
   /technologies:
     get:
       parameters:

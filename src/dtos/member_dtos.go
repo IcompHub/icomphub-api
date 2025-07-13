@@ -32,8 +32,8 @@ type MemberCreateRequestDTO struct {
 }
 
 type MemberUpdateRequestDTO struct {
-	Nickname  string                 `form:"nickname" json:"nickname"`
-	ProjectID uint64                 `form:"project_id" json:"project_id"`
+	Nickname  *string                `form:"nickname" json:"nickname"`
+	ProjectID *uint64                `form:"project_id" json:"project_id"`
 	UserId    *uint64                `form:"user_id" json:"user_id"`
 	Roles     []RoleCreateRequestDTO `form:"roles" json:"roles" binding:"required"`
 }

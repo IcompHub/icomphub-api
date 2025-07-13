@@ -21,7 +21,7 @@ func CreateRequestDTOToRole(createDTO *dtos.RoleCreateRequestDTO) *models.Role {
 	}
 }
 
-func RoleToDTOs(role []models.Role) []dtos.RoleDTO {
+func RolesToDTOs(role []models.Role) []dtos.RoleDTO {
 	dtosList := make([]dtos.RoleDTO, len(role))
 	for i, Role := range role {
 		dtosList[i] = *RoleToDTO(&Role)

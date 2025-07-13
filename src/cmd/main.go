@@ -88,7 +88,15 @@ func main() {
 	projectService := services.NewProjectService(projectRepository, uploadService, projectImageRepository)
 	projectController := controllers.NewProjectController(projectService)
 
-	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController, authController)
+	roleRepository := repositories.NewRoleRepository(dbConnection)
+	roleService := services.NewRoleService(roleRepository)
+	roleController := controllers.NewRoleController(roleService)
+
+	memberRepository := repositories.NewMemberRepository(dbConnection)
+	memberService := services.NewMemberService(memberRepository)
+	memberController := controllers.NewMemberController(memberService)
+
+	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController, authController, roleController, memberController)
 
 	// Need to be updated in the future to allow only authorized clients in production
 	config := cors.Config{
