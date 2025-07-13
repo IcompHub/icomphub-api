@@ -42,7 +42,20 @@ func ProjectToDTO(project *models.Project) (*dtos.ProjectDTO, error) {
 		ClassGroupId: project.ClassGroupID,
 		Technologies: technologiesDTO,
 		ImageIDs:     imagesDTO,
+		ClassGroup:   *ClassGroupToDTO(&project.ClassGroup),
+		Members:      MembersToShortDTOs(project.Members),
 	}, nil
+}
+
+func ProjectToShortDTO(project *models.Project) *dtos.ProjectShortDTO {
+	return &dtos.ProjectShortDTO{
+		Id:           project.ID,
+		Slug:         project.Slug,
+		Name:         project.Name,
+		Status:       string(project.Status),
+		ThumbnailID:  project.ThumbnailID,
+		ClassGroupId: project.ClassGroupID,
+	}
 }
 
 func CreateRequestDTOToProject(createDTO *dtos.ProjectCreateRequestDTO) (*models.Project, error) {
