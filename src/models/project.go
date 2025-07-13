@@ -18,7 +18,9 @@ type Project struct {
 	ClassGroupID uint64           `json:"class_group_id" gorm:"not null;index"`
 	CreatedAt    time.Time        `json:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt    time.Time        `json:"updated_at" gorm:"autoUpdateTime"`
-	Technologies []Technology     `gorm:"many2many:projects_technologies;"`
 
+	ClassGroup    ClassGroup     `json:"-" gorm:"constraint:OnDelete:CASCADE"`
+	Members       []Member       `json:"members" gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
+	Technologies  []Technology   `gorm:"many2many:project_technologies;"`
 	ProjectImages []ProjectImage `json:"project_images" gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
 }
