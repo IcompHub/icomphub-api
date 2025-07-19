@@ -133,6 +133,11 @@ func (service *projectService) Create(createDTO *dtos.ProjectCreateRequestDTO) (
 		validTechIds = append(validTechIds, tech.Id)
 	}
 
+	err = service.repository.ReplaceTechnologies(project.ID, validTechIds)
+	if err != nil {
+		return nil, codes.ErrorCreatingProject, err
+	}
+
 	for _, memberCreateDTO := range createDTO.Members {
 		memberCreateDTO.ProjectID = project.ID
 		_, code, err := service.memberService.Create(&memberCreateDTO)
@@ -140,8 +145,6 @@ func (service *projectService) Create(createDTO *dtos.ProjectCreateRequestDTO) (
 			return nil, code, err
 		}
 	}
-
-	service.repository.ReplaceTechnologies(project.ID, validTechIds)
 
 	project, code, err := service.find(project.ID)
 	if err != nil {
@@ -180,9 +183,9 @@ func (service *projectService) Update(id uint64, updateDTO *dtos.ProjectUpdateRe
 		project.Name = *updateDTO.Name
 	}
 
-	// if updateDTO.ClassGroupID != nil && *updateDTO.ClassGroupID != 0 {
-	// 	project.ClassGroupID = *updateDTO.ClassGroupID
-	// }
+	if updateDTO.ClassGroupId != nil && *updateDTO.ClassGroupId != 0 {
+		project.ClassGroupID = *updateDTO.ClassGroupId
+	}
 
 	if updateDTO.Data != nil {
 		jsonBytes, err := json.Marshal(updateDTO.Data)
@@ -200,6 +203,64 @@ func (service *projectService) Update(id uint64, updateDTO *dtos.ProjectUpdateRe
 	err = service.repository.Update(project)
 	if err != nil {
 		return nil, codes.ErrorUpdatingProject, err
+	}
+
+	var validTechIds []uint64
+
+	for _, techId := range updateDTO.TechnologyIDs {
+		tech, code, err := service.technologyService.Find(uint64(techId))
+		if err != nil {
+			return nil, code, err
+		}
+
+		validTechIds = append(validTechIds, tech.Id)
+	}
+
+	err = service.repository.ReplaceTechnologies(project.ID, validTechIds)
+	if err != nil {
+		return nil, codes.ErrorCreatingProject, err
+	}
+
+	updatedMemberIDs := make(map[uint64]bool)
+
+	for _, memberUpdateDTO := range updateDTO.Members {
+		if memberUpdateDTO.ID != nil {
+			updatedMemberIDs[*memberUpdateDTO.ID] = true
+
+			_, code, err := service.memberService.Update(*memberUpdateDTO.ID, &dtos.MemberUpdateRequestDTO{
+				Nickname:  memberUpdateDTO.Nickname,
+				ProjectID: &project.ID,
+				UserId:    memberUpdateDTO.UserId,
+				RoleIDs:   memberUpdateDTO.RoleIDs,
+			})
+			if err != nil {
+				return nil, code, err
+			}
+		} else {
+			_, code, err := service.memberService.Create(&dtos.MemberCreateRequestDTO{
+				Nickname:  *memberUpdateDTO.Nickname,
+				ProjectID: project.ID,
+				UserId:    memberUpdateDTO.UserId,
+				RoleIDs:   memberUpdateDTO.RoleIDs,
+			})
+			if err != nil {
+				return nil, code, err
+			}
+		}
+	}
+
+	for _, member := range project.Members {
+		if _, found := updatedMemberIDs[member.ID]; !found {
+			code, err := service.memberService.Delete(member.ID)
+			if err != nil {
+				return nil, code, err
+			}
+		}
+	}
+
+	project, code, err = service.find(project.ID)
+	if err != nil {
+		return nil, code, err
 	}
 
 	mapper, err := mappers.ProjectToDTO(project)

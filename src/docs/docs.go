@@ -2089,10 +2089,30 @@ const docTemplate = `{
                 }
             }
         },
+        "dtos.MemberUpdateInProjetRequestDTO": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "role_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "dtos.MemberUpdateRequestDTO": {
             "type": "object",
             "required": [
-                "roles"
+                "role_ids"
             ],
             "properties": {
                 "nickname": {
@@ -2101,10 +2121,10 @@ const docTemplate = `{
                 "project_id": {
                     "type": "integer"
                 },
-                "roles": {
+                "role_ids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dtos.RoleCreateRequestDTO"
+                        "type": "integer"
                     }
                 },
                 "user_id": {
@@ -2245,11 +2265,23 @@ const docTemplate = `{
                     "type": "object",
                     "additionalProperties": {}
                 },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dtos.MemberUpdateInProjetRequestDTO"
+                    }
+                },
                 "name": {
                     "type": "string"
                 },
                 "slug": {
                     "type": "string"
+                },
+                "technology_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

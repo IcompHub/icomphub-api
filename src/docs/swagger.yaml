@@ -279,20 +279,33 @@ definitions:
       status:
         type: string
     type: object
+  dtos.MemberUpdateInProjetRequestDTO:
+    properties:
+      id:
+        type: integer
+      nickname:
+        type: string
+      role_ids:
+        items:
+          type: integer
+        type: array
+      user_id:
+        type: integer
+    type: object
   dtos.MemberUpdateRequestDTO:
     properties:
       nickname:
         type: string
       project_id:
         type: integer
-      roles:
+      role_ids:
         items:
-          $ref: '#/definitions/dtos.RoleCreateRequestDTO'
+          type: integer
         type: array
       user_id:
         type: integer
     required:
-    - roles
+    - role_ids
     type: object
   dtos.ProjectCreateRequestDTO:
     properties:
@@ -385,10 +398,18 @@ definitions:
       data:
         additionalProperties: {}
         type: object
+      members:
+        items:
+          $ref: '#/definitions/dtos.MemberUpdateInProjetRequestDTO'
+        type: array
       name:
         type: string
       slug:
         type: string
+      technology_ids:
+        items:
+          type: integer
+        type: array
     type: object
   dtos.RoleCreateRequestDTO:
     properties:

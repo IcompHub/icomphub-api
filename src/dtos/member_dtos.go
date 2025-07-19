@@ -32,8 +32,15 @@ type MemberCreateRequestDTO struct {
 }
 
 type MemberUpdateRequestDTO struct {
-	Nickname  *string                `form:"nickname" json:"nickname"`
-	ProjectID *uint64                `form:"project_id" json:"project_id"`
-	UserId    *uint64                `form:"user_id" json:"user_id"`
-	Roles     []RoleCreateRequestDTO `form:"roles" json:"roles" binding:"required"`
+	Nickname  *string  `form:"nickname" json:"nickname"`
+	ProjectID *uint64  `form:"project_id" json:"project_id"`
+	UserId    *uint64  `form:"user_id" json:"user_id"`
+	RoleIDs   []uint64 `form:"role_ids" json:"role_ids" binding:"required"`
+}
+
+type MemberUpdateInProjetRequestDTO struct {
+	ID       *uint64  `form:"id" json:"id" `
+	Nickname *string  `form:"nickname" json:"nickname"`
+	UserId   *uint64  `form:"user_id" json:"user_id"`
+	RoleIDs  []uint64 `form:"role_ids" json:"role_ids"`
 }
