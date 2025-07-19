@@ -1165,6 +1165,16 @@ paths:
       summary: Update a project
       tags:
       - projects
+  /projects/by-user-id:
+    get:
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - BearerAuth: []
+      summary: Get projects by user id
+      tags:
+      - projects
   /projects/images/{id}:
     delete:
       parameters:

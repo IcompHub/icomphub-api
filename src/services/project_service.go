@@ -30,6 +30,7 @@ type ProjectService interface {
 	UpdateImage(imageID uint64, image *multipart.FileHeader) (*dtos.ProjectImageDTO, codes.Code, error)
 	DeleteImage(imageID uint64) (codes.Code, error)
 	GetImageFullPath(imageID uint64) (string, codes.Code, error)
+	FindByUserID(userID uint64) ([]dtos.ProjectDTO, codes.Code, error)
 }
 
 type projectService struct {
@@ -480,4 +481,18 @@ func (service *projectService) GetImageFullPath(imageID uint64) (string, codes.C
 	}
 
 	return fullPath, codes.FileFound, nil
+}
+
+func (s *projectService) FindByUserID(userID uint64) ([]dtos.ProjectDTO, codes.Code, error) {
+	projects, err := s.repository.FindByUserID(userID)
+	if err != nil {
+		return nil, codes.ErrorFindingProject, err
+	}
+
+	projectDTOs, err := mappers.ProjectsToDTOs(projects)
+	if err != nil {
+		return nil, codes.ErrorFindingProject, err
+	}
+
+	return projectDTOs, codes.GetAllProjects, nil
 }
