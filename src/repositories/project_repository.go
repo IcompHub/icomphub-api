@@ -18,6 +18,7 @@ type ProjectRepository interface {
 	Update(project *models.Project) error
 	ReplaceTechnologies(projectID uint64, technologyIDs []uint64) error
 	RemoveTechnologies(projectID uint64, technologyIDs []uint64) error
+	FindByUserID(userID uint64) ([]models.Project, error)
 }
 
 type projectRepository struct {
@@ -119,4 +120,18 @@ func (repository *projectRepository) RemoveTechnologies(projectID uint64, techno
 	}
 
 	return repository.db.Model(&project).Association("Technologies").Delete(&technologies)
+}
+
+func (r *projectRepository) FindByUserID(userID uint64) ([]models.Project, error) {
+	var projects []models.Project
+
+	err := r.db.
+		Joins("JOIN members ON members.project_id = projects.id").
+		Where("members.user_id = ?", userID).
+		Preload("Members").
+		Preload("Members.User").
+		Preload("Members.Roles").
+		Find(&projects).Error
+
+	return projects, err
 }

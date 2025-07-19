@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"icomphub-api/auth"
 	"icomphub-api/codes"
 	"icomphub-api/dtos"
 	"icomphub-api/handlers"
@@ -355,4 +356,25 @@ func (controller *ProjectController) GetImage(context *gin.Context) {
 	}
 
 	context.File(fullPath)
+}
+
+// @Summary      Get projects by user id
+// @Tags         projects
+// @Security BearerAuth
+// @Produce json
+// @Router       /projects/by-user-id [get]
+func (controller *ProjectController) GetByUser(c *gin.Context) {
+	userID, code, err := auth.GetUserIDFromToken(c)
+	if err != nil {
+		handlers.Unauthorized(c, code, err)
+		return
+	}
+
+	projects, code, err := controller.service.FindByUserID(userID)
+	if err != nil {
+		handlers.BadRequest(c, code, err)
+		return
+	}
+
+	handlers.Ok(c, code, "Got all projects by user id with success", projects)
 }

@@ -485,6 +485,23 @@ const docTemplate = `{
                 }
             }
         },
+        "/projects/by-user-id": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Get projects by user id",
+                "responses": {}
+            }
+        },
         "/projects/images/{id}": {
             "get": {
                 "security": [
