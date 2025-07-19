@@ -90,7 +90,25 @@ func (s *memberService) Update(id uint64, dto *dtos.MemberUpdateRequestDTO) (*dt
 		return nil, codes.ErrorUpdatingMember, err
 	}
 
-	return mappers.MemberToDTO(member), codes.UpdateMember, nil
+	var validRoleIDs []uint64
+	for _, roleID := range dto.RoleIDs {
+		role, code, err := s.roleService.GetByID(roleID)
+		if err != nil {
+			return nil, code, err
+		}
+		validRoleIDs = append(validRoleIDs, role.Id)
+	}
+
+	if err := s.repository.ReplaceRoles(member.ID, validRoleIDs); err != nil {
+		return nil, codes.ErrorCreatingMember, err
+	}
+
+	fullMember, err := s.repository.FindByID(member.ID)
+	if err != nil {
+		return nil, codes.ErrorCreatingMember, err
+	}
+
+	return mappers.MemberToDTO(fullMember), codes.UpdateMember, nil
 }
 
 func (s *memberService) Delete(id uint64) (codes.Code, error) {

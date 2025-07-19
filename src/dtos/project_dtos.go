@@ -40,8 +40,11 @@ type ProjectCreateRequestDTO struct {
 }
 
 type ProjectUpdateRequestDTO struct {
-	Slug         *string         `form:"slug" json:"slug"`
-	Name         *string         `form:"name" json:"name"`
-	Data         *map[string]any `form:"data" json:"data"`
-	ClassGroupId *uint64         `form:"class_group_id" json:"class_group_id"`
+	Slug *string         `form:"slug" json:"slug"`
+	Name *string         `form:"name" json:"name"`
+	Data *map[string]any `form:"data" json:"data"`
+
+	ClassGroupId  *uint64                          `form:"class_group_id" json:"class_group_id"`
+	TechnologyIDs []uint64                         `form:"technology_ids" json:"technology_ids"`
+	Members       []MemberUpdateInProjetRequestDTO `form:"members" json:"members"`
 }
