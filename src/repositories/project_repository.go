@@ -16,6 +16,8 @@ type ProjectRepository interface {
 	Create(project *models.Project) error
 	Delete(project *models.Project) error
 	Update(project *models.Project) error
+	ReplaceTechnologies(projectID uint64, technologyIDs []uint64) error
+	RemoveTechnologies(projectID uint64, technologyIDs []uint64) error
 }
 
 type projectRepository struct {
@@ -89,4 +91,32 @@ func (repository *projectRepository) Delete(project *models.Project) error {
 
 func (repository *projectRepository) Update(project *models.Project) error {
 	return repository.db.Model(&models.Project{}).Where("id = ?", project.ID).Save(&project).Error
+}
+
+func (repository *projectRepository) ReplaceTechnologies(projectID uint64, technologyIDs []uint64) error {
+	var project models.Project
+	if err := repository.db.First(&project, projectID).Error; err != nil {
+		return err
+	}
+
+	var technologies []models.Technology
+	if err := repository.db.Where("id IN ?", technologyIDs).Find(&technologies).Error; err != nil {
+		return err
+	}
+
+	return repository.db.Model(&project).Association("Technologies").Replace(&technologies)
+}
+
+func (repository *projectRepository) RemoveTechnologies(projectID uint64, technologyIDs []uint64) error {
+	var project models.Project
+	if err := repository.db.First(&project, projectID).Error; err != nil {
+		return err
+	}
+
+	var technologies []models.Technology
+	if err := repository.db.Where("id IN ?", technologyIDs).Find(&technologies).Error; err != nil {
+		return err
+	}
+
+	return repository.db.Model(&project).Association("Technologies").Delete(&technologies)
 }

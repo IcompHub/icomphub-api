@@ -84,17 +84,17 @@ func main() {
 
 	projectImageRepository := repositories.NewProjectImageRepository(dbConnection)
 
-	projectRepository := repositories.NewProjectRepository(dbConnection)
-	projectService := services.NewProjectService(projectRepository, uploadService, projectImageRepository)
-	projectController := controllers.NewProjectController(projectService)
-
 	roleRepository := repositories.NewRoleRepository(dbConnection)
 	roleService := services.NewRoleService(roleRepository)
 	roleController := controllers.NewRoleController(roleService)
 
 	memberRepository := repositories.NewMemberRepository(dbConnection)
-	memberService := services.NewMemberService(memberRepository)
+	memberService := services.NewMemberService(memberRepository, roleService)
 	memberController := controllers.NewMemberController(memberService)
+
+	projectRepository := repositories.NewProjectRepository(dbConnection)
+	projectService := services.NewProjectService(projectRepository, uploadService, projectImageRepository, technologyService, memberService)
+	projectController := controllers.NewProjectController(projectService)
 
 	router := routes.SetupRouter(userController, technologyController, classGroupController, projectController, authController, roleController, memberController)
 

@@ -17,11 +17,12 @@ type MemberService interface {
 }
 
 type memberService struct {
-	repository repositories.MemberRepository
+	repository  repositories.MemberRepository
+	roleService RoleService
 }
 
-func NewMemberService(repo repositories.MemberRepository) MemberService {
-	return &memberService{repository: repo}
+func NewMemberService(repo repositories.MemberRepository, roleService RoleService) MemberService {
+	return &memberService{repository: repo, roleService: roleService}
 }
 
 func (s *memberService) GetByID(id uint64) (*dtos.MemberDTO, codes.Code, error) {
@@ -49,12 +50,29 @@ func (s *memberService) Create(dto *dtos.MemberCreateRequestDTO) (*dtos.MemberDT
 		UserId:    dto.UserId,
 	}
 
-	err := s.repository.Create(member)
+	if err := s.repository.Create(member); err != nil {
+		return nil, codes.ErrorCreatingMember, err
+	}
+
+	var validRoleIDs []uint64
+	for _, roleID := range dto.RoleIDs {
+		role, code, err := s.roleService.GetByID(roleID)
+		if err != nil {
+			return nil, code, err
+		}
+		validRoleIDs = append(validRoleIDs, role.Id)
+	}
+
+	if err := s.repository.ReplaceRoles(member.ID, validRoleIDs); err != nil {
+		return nil, codes.ErrorCreatingMember, err
+	}
+
+	fullMember, err := s.repository.FindByID(member.ID)
 	if err != nil {
 		return nil, codes.ErrorCreatingMember, err
 	}
 
-	return mappers.MemberToDTO(member), codes.CreateMember, nil
+	return mappers.MemberToDTO(fullMember), codes.CreateMember, nil
 }
 
 func (s *memberService) Update(id uint64, dto *dtos.MemberUpdateRequestDTO) (*dtos.MemberDTO, codes.Code, error) {

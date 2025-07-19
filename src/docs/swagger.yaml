@@ -234,16 +234,16 @@ definitions:
         type: string
       project_id:
         type: integer
-      roles:
+      role_ids:
         items:
-          $ref: '#/definitions/dtos.RoleCreateRequestDTO'
+          type: integer
         type: array
       user_id:
         type: integer
     required:
     - nickname
     - project_id
-    - roles
+    - role_ids
     type: object
   dtos.MemberDTO:
     properties:
@@ -311,9 +311,9 @@ definitions:
       slug:
         minLength: 2
         type: string
-      technologies:
+      technology_ids:
         items:
-          $ref: '#/definitions/dtos.TechnologyCreateRequestDTO'
+          type: integer
         type: array
     required:
     - class_group_id
@@ -321,7 +321,7 @@ definitions:
     - members
     - name
     - slug
-    - technologies
+    - technology_ids
     type: object
   dtos.ProjectDTO:
     properties:

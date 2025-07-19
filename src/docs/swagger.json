@@ -2005,7 +2005,7 @@
             "required": [
                 "nickname",
                 "project_id",
-                "roles"
+                "role_ids"
             ],
             "properties": {
                 "nickname": {
@@ -2015,10 +2015,10 @@
                 "project_id": {
                     "type": "integer"
                 },
-                "roles": {
+                "role_ids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dtos.RoleCreateRequestDTO"
+                        "type": "integer"
                     }
                 },
                 "user_id": {
@@ -2109,7 +2109,7 @@
                 "members",
                 "name",
                 "slug",
-                "technologies"
+                "technology_ids"
             ],
             "properties": {
                 "class_group_id": {
@@ -2133,10 +2133,10 @@
                     "type": "string",
                     "minLength": 2
                 },
-                "technologies": {
+                "technology_ids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dtos.TechnologyCreateRequestDTO"
+                        "type": "integer"
                     }
                 }
             }
