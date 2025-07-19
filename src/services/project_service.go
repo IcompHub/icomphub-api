@@ -33,13 +33,15 @@ type ProjectService interface {
 }
 
 type projectService struct {
-	repository      repositories.ProjectRepository
-	fileService     files.FileUploadService
-	imageRepository repositories.ProjectImageRepository
+	repository        repositories.ProjectRepository
+	fileService       files.FileUploadService
+	imageRepository   repositories.ProjectImageRepository
+	technologyService TechnologyService
+	memberService     MemberService
 }
 
-func NewProjectService(repo repositories.ProjectRepository, fileService files.FileUploadService, imageRepository repositories.ProjectImageRepository) ProjectService {
-	return &projectService{repository: repo, fileService: fileService, imageRepository: imageRepository}
+func NewProjectService(repo repositories.ProjectRepository, fileService files.FileUploadService, imageRepository repositories.ProjectImageRepository, technologyService TechnologyService, memberService MemberService) ProjectService {
+	return &projectService{repository: repo, fileService: fileService, imageRepository: imageRepository, technologyService: technologyService, memberService: memberService}
 }
 
 func (service *projectService) find(id uint64) (*models.Project, codes.Code, error) {
@@ -118,6 +120,32 @@ func (service *projectService) Create(createDTO *dtos.ProjectCreateRequestDTO) (
 	err = service.repository.Create(project)
 	if err != nil {
 		return nil, codes.ErrorCreatingProject, err
+	}
+
+	var validTechIds []uint64
+
+	for _, techId := range createDTO.TechnologyIDs {
+		tech, code, err := service.technologyService.Find(uint64(techId))
+		if err != nil {
+			return nil, code, err
+		}
+
+		validTechIds = append(validTechIds, tech.Id)
+	}
+
+	for _, memberCreateDTO := range createDTO.Members {
+		memberCreateDTO.ProjectID = project.ID
+		_, code, err := service.memberService.Create(&memberCreateDTO)
+		if err != nil {
+			return nil, code, err
+		}
+	}
+
+	service.repository.ReplaceTechnologies(project.ID, validTechIds)
+
+	project, code, err := service.find(project.ID)
+	if err != nil {
+		return nil, code, err
 	}
 
 	mapper, err := mappers.ProjectToDTO(project)

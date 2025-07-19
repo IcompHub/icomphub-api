@@ -25,10 +25,10 @@ type MemberRequestDTO struct {
 }
 
 type MemberCreateRequestDTO struct {
-	Nickname  string                 `form:"nickname" json:"nickname" binding:"required,min=2"`
-	ProjectID uint64                 `form:"project_id" json:"project_id" binding:"required"`
-	UserId    *uint64                `form:"user_id" json:"user_id"`
-	Roles     []RoleCreateRequestDTO `form:"roles" json:"roles" binding:"required"`
+	Nickname  string   `form:"nickname" json:"nickname" binding:"required,min=2"`
+	ProjectID uint64   `form:"project_id" json:"project_id" binding:"required"`
+	UserId    *uint64  `form:"user_id" json:"user_id"`
+	RoleIDs   []uint64 `form:"role_ids" json:"role_ids" binding:"required"`
 }
 
 type MemberUpdateRequestDTO struct {

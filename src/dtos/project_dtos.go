@@ -34,9 +34,9 @@ type ProjectCreateRequestDTO struct {
 	Name string         `form:"name" json:"name" binding:"required,min=2"`
 	Data map[string]any `form:"data" json:"data" binding:"required"`
 
-	ClassGroupId uint64                       `form:"class_group_id" json:"class_group_id" binding:"required"`
-	Technologies []TechnologyCreateRequestDTO `form:"technologies" json:"technologies" binding:"required"`
-	Members      []MemberCreateRequestDTO     `form:"members" json:"members" binding:"required"`
+	ClassGroupId  uint64                   `form:"class_group_id" json:"class_group_id" binding:"required"`
+	TechnologyIDs []uint64                 `form:"technology_ids" json:"technology_ids" binding:"required"`
+	Members       []MemberCreateRequestDTO `form:"members" json:"members" binding:"required"`
 }
 
 type ProjectUpdateRequestDTO struct {

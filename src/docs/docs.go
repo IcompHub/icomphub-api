@@ -2016,7 +2016,7 @@ const docTemplate = `{
             "required": [
                 "nickname",
                 "project_id",
-                "roles"
+                "role_ids"
             ],
             "properties": {
                 "nickname": {
@@ -2026,10 +2026,10 @@ const docTemplate = `{
                 "project_id": {
                     "type": "integer"
                 },
-                "roles": {
+                "role_ids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dtos.RoleCreateRequestDTO"
+                        "type": "integer"
                     }
                 },
                 "user_id": {
@@ -2120,7 +2120,7 @@ const docTemplate = `{
                 "members",
                 "name",
                 "slug",
-                "technologies"
+                "technology_ids"
             ],
             "properties": {
                 "class_group_id": {
@@ -2144,10 +2144,10 @@ const docTemplate = `{
                     "type": "string",
                     "minLength": 2
                 },
-                "technologies": {
+                "technology_ids": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/dtos.TechnologyCreateRequestDTO"
+                        "type": "integer"
                     }
                 }
             }

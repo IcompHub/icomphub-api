@@ -12,6 +12,8 @@ type MemberRepository interface {
 	Create(member *models.Member) error
 	Update(member *models.Member) error
 	Delete(member *models.Member) error
+	ReplaceRoles(memberID uint64, roleIDs []uint64) error
+	RemoveRoles(memberID uint64, roleIDs []uint64) error
 }
 
 type memberRepository struct {
@@ -48,4 +50,32 @@ func (r *memberRepository) Update(member *models.Member) error {
 
 func (r *memberRepository) Delete(member *models.Member) error {
 	return r.db.Delete(&member).Error
+}
+
+func (r *memberRepository) ReplaceRoles(memberID uint64, roleIDs []uint64) error {
+	var member models.Member
+	if err := r.db.First(&member, memberID).Error; err != nil {
+		return err
+	}
+
+	var roles []models.Role
+	if err := r.db.Where("id IN ?", roleIDs).Find(&roles).Error; err != nil {
+		return err
+	}
+
+	return r.db.Model(&member).Association("Roles").Replace(&roles)
+}
+
+func (r *memberRepository) RemoveRoles(memberID uint64, roleIDs []uint64) error {
+	var member models.Member
+	if err := r.db.First(&member, memberID).Error; err != nil {
+		return err
+	}
+
+	var roles []models.Role
+	if err := r.db.Where("id IN ?", roleIDs).Find(&roles).Error; err != nil {
+		return err
+	}
+
+	return r.db.Model(&member).Association("Roles").Delete(&roles)
 }
